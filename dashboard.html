@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>MFL Fantasy</title>
+  <meta charset="UTF-8" />
+  <title>MFL Fantasy | Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <h1>Welcome to MFL Fantasy</h1>
-  <p>Phase 2 coming next…</p>
+
+  <div class="card" id="profileCard" style="display:none;">
+    <h2>Profile / Profil</h2>
+
+    <input
+      type="text"
+      id="displayName"
+      placeholder="Your Name / Nama Anda"
+      maxlength="20"
+    />
+
+    <input
+      type="text"
+      id="teamName"
+      placeholder="Your Team Name / Nama Pasukan"
+      maxlength="30"
+    />
+
+    <button onclick="saveProfile()">Submit</button>
+    <p id="message"></p>
+  </div>
+
+  <div id="lockedMessage" style="display:none;">
+    <h2>Profile Locked</h2>
+    <p>Your team has been registered.</p>
+  </div>
+
+  <script src="js/firebase.js"></script>
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
