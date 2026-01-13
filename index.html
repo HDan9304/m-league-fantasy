@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M-League Fantasy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container" id="auth-screen">
+        <div class="header">
+            <h1>M-League Fantasy</h1>
+            <p>Official Manager Experience</p>
+        </div>
+
+        <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email (e.g. boss@jdt.my)" required>
+            <input type="password" id="loginPass" placeholder="Password" required>
+            <button type="submit" class="btn-primary">Masuk / Login</button>
+        </form>
+
+        <form id="registerForm" class="hidden">
+            <input type="text" id="regManager" placeholder="Manager Name" required>
+            <input type="text" id="regTeam" placeholder="Team Name" required>
+            <input type="email" id="regEmail" placeholder="Email Address" required>
+            <input type="password" id="regPass" placeholder="Create Password" required>
+            <button type="submit" class="btn-primary">Daftar / Register</button>
+        </form>
+
+        <p class="toggle-link" id="toggleBtn">Don't have a team? Register here</p>
+    </div>
+
+    <div class="dashboard hidden" id="dashboard-screen">
+        <div class="nav">
+            <h3 id="displayTeamName">My Team</h3>
+            <button id="logoutBtn" class="btn-small">Logout</button>
+        </div>
+        <div class="welcome-box">
+            <h2>Welcome, <span id="displayManagerName">Manager</span></h2>
+            <p>Points: 0 • Rank: 145,203</p>
+        </div>
+        <div class="pitch-area">
+            <div class="pitch-visual">
+                <p>Football Pitch Loading...</p>
+                <small>(Next Step: We will build the pitch here)</small>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
