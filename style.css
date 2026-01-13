@@ -209,3 +209,8 @@ body {
         height: 100vh;
     }
 }
+
+/* Utility to toggle forms */
+.hidden {
+    display: none !important;
+}
