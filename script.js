@@ -15,6 +15,32 @@ document.addEventListener('DOMContentLoaded', () => {
         togglePasswordBtn.textContent = type === 'password' ? 'Show' : 'Hide';
     });
 
+    // --- NEW: Toggle between Login and Register ---
+    const toggleFormBtn = document.getElementById('toggleFormBtn');
+    const footerText = document.getElementById('footerText');
+    const registerForm = document.getElementById('registerForm');
+    
+    toggleFormBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        // Check which form is currently hidden
+        const isLoginVisible = !loginForm.classList.contains('hidden');
+
+        if (isLoginVisible) {
+            // Switch to Register
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            footerText.textContent = "Already have a team?";
+            toggleFormBtn.textContent = "Back to Login";
+        } else {
+            // Switch back to Login
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            footerText.textContent = "Don't have a team yet?";
+            toggleFormBtn.textContent = "Register for Season 2026";
+        }
+    });
+
     // 2. Handle Form Submission
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault(); // Stop page reload for demo
