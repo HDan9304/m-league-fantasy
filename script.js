@@ -1,79 +1,134 @@
-// 1. SELECT ELEMENTS
+// --- 1. FIREBASE SETUP (Paste your keys here) ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    // 🔴 PASTE YOUR KEYS FROM FIREBASE CONSOLE HERE 🔴
+    apiKey: "AIzaSyBvMqEEIU6B6TYxLCsf2tRGSbSe_PtYu80", 
+    authDomain: "m-league-fantasy-7460c.firebaseapp.com",
+    projectId: ""m-league-fantasy-7460c",
+    storageBucket: "m-league-fantasy-7460c.firebasestorage.app",
+    messagingSenderId: "16232427026",
+    appId: "1:16232427026:web:6c59e99bba1ddc7eeaf2cb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// --- 2. SELECT ELEMENTS ---
 const authScreen = document.getElementById('auth-screen');
 const dashboardScreen = document.getElementById('dashboard-screen');
-
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const toggleBtn = document.getElementById('toggleBtn');
 const toggleText = document.getElementById('toggleText');
+const forgotBtn = document.getElementById('forgotBtn');
 
-const displayTeamName = document.getElementById('displayTeamName');
-const displayManagerName = document.getElementById('displayManagerName');
+// --- 3. AUTH LOGIC ---
 
-// 2. TOGGLE LOGIC
+// Toggle Login/Register Views
 toggleBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    if (loginForm.classList.contains('hidden')) {
-        loginForm.classList.remove('hidden');
-        registerForm.classList.add('hidden');
-        toggleText.innerText = "Don't have a team yet?";
-        toggleBtn.innerText = "Register for Season 2026";
-    } else {
-        loginForm.classList.add('hidden');
-        registerForm.classList.remove('hidden');
-        toggleText.innerText = "Already have a team?";
-        toggleBtn.innerText = "Back to Login";
+    loginForm.classList.toggle('hidden');
+    registerForm.classList.toggle('hidden');
+    
+    const isLogin = !loginForm.classList.contains('hidden');
+    toggleText.innerText = isLogin ? "Don't have a team yet?" : "Already have a team?";
+    toggleBtn.innerText = isLogin ? "Register for Season 2026" : "Back to Login";
+});
+
+// Forgot Password Logic
+forgotBtn.addEventListener('click', async () => {
+    const email = prompt("Please enter your email address to reset password:");
+    if (email) {
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert("Password reset link sent to your email!");
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
     }
 });
 
-// 3. REGISTER
-registerForm.addEventListener('submit', (e) => {
+// REGISTER (Create User + Save Team Data to Firestore)
+registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('regEmail').value;
     const pass = document.getElementById('regPass').value;
     const manager = document.getElementById('regManager').value;
     const team = document.getElementById('regTeam').value;
 
-    const userData = { pass, manager, team };
-    localStorage.setItem(email, JSON.stringify(userData));
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
 
-    alert("Registration Successful!");
-    toggleBtn.click(); // Switch to login
-});
+        // Save custom data (Manager Name, Team) to Firestore Database
+        await setDoc(doc(db, "users", user.uid), {
+            manager_name: manager,
+            team_name: team,
+            email: email,
+            points: 0,
+            budget: 100.0
+        });
 
-// 4. LOGIN
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const pass = document.getElementById('loginPass').value;
-    const storedUser = localStorage.getItem(email);
-
-    if (storedUser) {
-        const user = JSON.parse(storedUser);
-        if (user.pass === pass) {
-            showDashboard(user);
-        } else {
-            alert("Incorrect Password");
-        }
-    } else {
-        alert("User not found.");
+        alert("Registration Successful! Welcome to the League.");
+        // Note: onAuthStateChanged will handle the redirect automatically
+    } catch (error) {
+        alert("Registration Failed: " + error.message);
     }
 });
 
-// 5. SHOW DASHBOARD
-function showDashboard(user) {
+// LOGIN
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        // Note: onAuthStateChanged will handle the redirect
+    } catch (error) {
+        alert("Login Failed: " + error.message);
+    }
+});
+
+// LOGOUT
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    signOut(auth).then(() => {
+        location.reload();
+    });
+});
+
+// --- 4. STATE LISTENER (The Brain) ---
+// This runs automatically whenever the app starts or user logs in/out
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // User is signed in, fetch their data from Firestore
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            showDashboard(data);
+        } else {
+            console.log("No such document!");
+        }
+    } else {
+        // User is signed out
+        authScreen.classList.remove('hidden');
+        dashboardScreen.classList.add('hidden');
+    }
+});
+
+function showDashboard(data) {
     authScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
     
-    // Remove the center alignment from body for dashboard view
     document.body.style.display = 'block'; 
     document.body.style.background = '#F0F2F5';
 
-    displayTeamName.innerText = user.team;
-    displayManagerName.innerText = user.manager;
+    document.getElementById('displayTeamName').innerText = data.team_name;
+    document.getElementById('displayManagerName').innerText = data.manager_name;
 }
-
-// 6. LOGOUT
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    location.reload();
-});
