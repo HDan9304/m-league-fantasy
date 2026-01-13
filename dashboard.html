@@ -1,39 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>MFL Fantasy | Dashboard</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
+import { auth, db } from "./firebase.js";
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  <div class="card" id="profileCard" style="display:none;">
-    <h2>Profile / Profil</h2>
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-    <input
-      type="text"
-      id="displayName"
-      placeholder="Your Name / Nama Anda"
-      maxlength="20"
-    />
+  const userRef = doc(db, "users", user.uid);
+  const snap = await getDoc(userRef);
 
-    <input
-      type="text"
-      id="teamName"
-      placeholder="Your Team Name / Nama Pasukan"
-      maxlength="30"
-    />
+  if (snap.exists()) {
+    const data = snap.data();
 
-    <button onclick="saveProfile()">Submit</button>
-    <p id="message"></p>
-  </div>
+    if (data.status === "banned") {
+      alert("You are banned / Anda telah disekat");
+      await signOut(auth);
+      return;
+    }
 
-  <div id="lockedMessage" style="display:none;">
-    <h2>Profile Locked</h2>
-    <p>Your team has been registered.</p>
-  </div>
+    if (data.teamName) {
+      document.getElementById("lockedMessage").style.display = "block";
+    } else {
+      document.getElementById("profileCard").style.display = "block";
+    }
+  } else {
+    document.getElementById("profileCard").style.display = "block";
+  }
+});
 
-  <script src="js/firebase.js"></script>
-  <script type="module" src="js/dashboard.js"></script>
-</body>
-</html>
+window.saveProfile = async function () {
+  const name = document.getElementById("displayName").value.trim();
+  const teamName = document.getElementById("teamName").value.trim();
+  const user = auth.currentUser;
+
+  if (!name || !teamName) {
+    document.getElementById("message").innerText =
+      "Please fill all fields / Sila isi semua";
+    return;
+  }
+
+  await setDoc(doc(db, "users", user.uid), {
+    name,
+    teamName,
+    status: "active",
+    createdAt: serverTimestamp()
+  });
+
+  location.reload();
+};
