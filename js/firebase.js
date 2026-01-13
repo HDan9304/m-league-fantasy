@@ -1,7 +1,7 @@
-<!-- js/firebase.js -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+// Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 <script>
   const firebaseConfig = {
@@ -13,8 +13,9 @@
     appId: "1:16232427026:web:6c59e99bba1ddc7eeaf2cb"
   };
 
-  firebase.initializeApp(firebaseConfig);
+  // Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
+// Export services
+export const auth = getAuth(app);
+export const db = getFirestore(app);
