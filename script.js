@@ -41,24 +41,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Handle Form Submission
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Stop page reload for demo
+    // 2. Handle LOGIN Submission
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
         const email = document.getElementById('email').value;
-        const submitBtn = document.querySelector('.btn-primary');
+        const password = document.getElementById('password').value;
+        const submitBtn = loginForm.querySelector('.btn-primary');
 
-        // Simulate loading state (Professional touch)
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Verifying...';
-        submitBtn.style.opacity = '0.7';
+        try {
+            submitBtn.textContent = 'Verifying...';
+            const res = await fetch('http://localhost:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
 
-        setTimeout(() => {
-            alert(`Welcome back to M-League Fantasy, Manager!\nLogin attempt for: ${email}`);
-            
-            // Reset button
-            submitBtn.textContent = originalText;
-            submitBtn.style.opacity = '1';
-        }, 1500);
+            const data = await res.json();
+            if (res.ok) {
+                alert(`Welcome back, Manager ${data.manager}!`);
+                // Redirect to dashboard here
+            } else {
+                alert(data.error);
+            }
+        } catch (err) {
+            alert("Server connection failed");
+        } finally {
+            submitBtn.textContent = 'Masuk / Login';
+        }
+    });
+
+    // 3. Handle REGISTER Submission
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('reg-email').value;
+        const managerName = document.getElementById('reg-manager').value;
+        const teamName = document.getElementById('reg-team').value;
+        const password = document.getElementById('reg-password').value;
+
+        try {
+            const res = await fetch('http://localhost:3000/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, managerName, teamName, password })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.message);
+                // Switch back to login view automatically
+                toggleFormBtn.click();
+            } else {
+                alert("Error: " + data.error);
+            }
+        } catch (err) {
+            alert("Registration failed");
+        }
     });
 });
