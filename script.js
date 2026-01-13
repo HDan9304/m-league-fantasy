@@ -74,7 +74,12 @@ registerForm.addEventListener('submit', async (e) => {
         });
 
         alert("Registration Successful! Welcome to the League.");
-        // Note: onAuthStateChanged will handle the redirect automatically
+        
+        // Fix: Manually show dashboard to prevent Race Condition
+        showDashboard({
+            manager_name: manager,
+            team_name: team
+        });
     } catch (error) {
         alert("Registration Failed: " + error.message);
     }
@@ -117,10 +122,10 @@ onAuthStateChanged(auth, async (user) => {
             const data = docSnap.data();
             showDashboard(data);
         } else {
-            console.log("No such document!");
+            console.log("Profile creating..."); // Wait for register function
         }
     } else {
-        // User is signed out
+        // User is signed out - Only NOW show the login screen
         authScreen.classList.remove('hidden');
         dashboardScreen.classList.add('hidden');
     }
