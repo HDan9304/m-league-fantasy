@@ -1,24 +1,32 @@
-// DOM Elements
+// 1. SELECT ELEMENTS
 const authScreen = document.getElementById('auth-screen');
 const dashboardScreen = document.getElementById('dashboard-screen');
+
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const toggleBtn = document.getElementById('toggleBtn');
+const toggleText = document.getElementById('toggleText');
 
-// Toggle Login/Register
-toggleBtn.addEventListener('click', () => {
+const displayTeamName = document.getElementById('displayTeamName');
+const displayManagerName = document.getElementById('displayManagerName');
+
+// 2. TOGGLE LOGIC
+toggleBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     if (loginForm.classList.contains('hidden')) {
         loginForm.classList.remove('hidden');
         registerForm.classList.add('hidden');
-        toggleBtn.innerText = "Don't have a team? Register here";
+        toggleText.innerText = "Don't have a team yet?";
+        toggleBtn.innerText = "Register for Season 2026";
     } else {
         loginForm.classList.add('hidden');
         registerForm.classList.remove('hidden');
+        toggleText.innerText = "Already have a team?";
         toggleBtn.innerText = "Back to Login";
     }
 });
 
-// Handle Register (Save to LocalStorage)
+// 3. REGISTER
 registerForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('regEmail').value;
@@ -28,11 +36,12 @@ registerForm.addEventListener('submit', (e) => {
 
     const userData = { pass, manager, team };
     localStorage.setItem(email, JSON.stringify(userData));
-    alert("Success! Please Login.");
+
+    alert("Registration Successful!");
     toggleBtn.click(); // Switch to login
 });
 
-// Handle Login
+// 4. LOGIN
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
@@ -42,25 +51,29 @@ loginForm.addEventListener('submit', (e) => {
     if (storedUser) {
         const user = JSON.parse(storedUser);
         if (user.pass === pass) {
-            // Login Success
-            loadDashboard(user);
+            showDashboard(user);
         } else {
-            alert("Wrong Password");
+            alert("Incorrect Password");
         }
     } else {
-        alert("User not found");
+        alert("User not found.");
     }
 });
 
-function loadDashboard(user) {
+// 5. SHOW DASHBOARD
+function showDashboard(user) {
     authScreen.classList.add('hidden');
     dashboardScreen.classList.remove('hidden');
-    document.body.style.backgroundColor = "#F4F5F7"; // Change bg color
-    document.getElementById('displayTeamName').innerText = user.team;
-    document.getElementById('displayManagerName').innerText = user.manager;
+    
+    // Remove the center alignment from body for dashboard view
+    document.body.style.display = 'block'; 
+    document.body.style.background = '#F0F2F5';
+
+    displayTeamName.innerText = user.team;
+    displayManagerName.innerText = user.manager;
 }
 
-// Logout
+// 6. LOGOUT
 document.getElementById('logoutBtn').addEventListener('click', () => {
     location.reload();
 });
