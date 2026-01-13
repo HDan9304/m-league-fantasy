@@ -90,7 +90,11 @@ loginForm.addEventListener('submit', async (e) => {
         await signInWithEmailAndPassword(auth, email, pass);
         // Note: onAuthStateChanged will handle the redirect
     } catch (error) {
-        alert("Login Failed: " + error.message);
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
+            alert("Account not found. Please Register for a new team first.");
+        } else {
+            alert("Login Failed: " + error.message);
+        }
     }
 });
 
