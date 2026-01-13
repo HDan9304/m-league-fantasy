@@ -1,25 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>MFL Fantasy | Login</title>
-  <link rel="stylesheet" href="css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | M-League Fantasy</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <div class="card">
-    <h2>Login / Log Masuk</h2>
+    <div class="login-container">
+        <div class="brand-header">
+            <svg class="brand-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            <h1>M-League Fantasy</h1>
+            <span>The Official Manager Experience</span>
+        </div>
 
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" class="form-control" placeholder="manager@example.com" required>
+            </div>
 
-    <button onclick="login()">Login</button>
-    <button onclick="signup()">Sign Up / Daftar</button>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                    <button type="button" id="togglePassword" class="password-toggle-btn">Show</button>
+                </div>
+            </div>
 
-    <p id="message"></p>
-  </div>
+            <div class="form-actions">
+                <a href="#" class="link forgot-pass">Forgot Password?</a>
+            </div>
 
-  <!-- Firebase -->
-  <script type="module" src="js/auth.js"></script>
+            <button type="submit" class="btn-primary">
+                Masuk / Login
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <div class="form-footer">
+            <p>Don't have a team yet?</p>
+            <a href="#" class="link">Register for Season 2026</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
