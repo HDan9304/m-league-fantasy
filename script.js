@@ -113,23 +113,35 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 // --- 4. STATE LISTENER (The Brain) ---
 // This runs automatically whenever the app starts or user logs in/out
 onAuthStateChanged(auth, async (user) => {
+    const loader = document.getElementById('loading-overlay');
+    
     if (user) {
-        // User is signed in, fetch their data from Firestore
+        // User is signed in - try to get data
         const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
+        let data = { manager_name: "Manager", team_name: "My Team" }; // Default Fallback
 
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            showDashboard(data);
-        } else {
-            console.log("Profile creating..."); // Wait for register function
+        try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                data = docSnap.data();
+            }
+        } catch (err) {
+            console.log("Offline or Error:", err);
         }
+
+        // Show Dashboard even if DB read fails
+        showDashboard(data);
     } else {
-        // User is signed out - Only NOW show the login screen
+        // User is signed out
         authScreen.classList.remove('hidden');
         dashboardScreen.classList.add('hidden');
+        document.body.style.background = 'linear-gradient(135deg, #0E1E5B 0%, #050a24 100%)';
     }
+    
+    // Hide Loader
+    if(loader) loader.classList.add('hidden');
 });
+
 
 function showDashboard(data) {
     authScreen.classList.add('hidden');
