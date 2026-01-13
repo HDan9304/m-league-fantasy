@@ -41,14 +41,29 @@ toggleBtn.addEventListener('click', (e) => {
 
 // Forgot Password Logic
 forgotBtn.addEventListener('click', async () => {
-    const email = prompt("Please enter your email address to reset password:");
+    // 1. Try to get email from the login box first
+    let email = document.getElementById('loginEmail').value;
+    
+    // 2. If empty, ask the user
+    if (!email) {
+        email = prompt("Please enter your email address to reset password:");
+    }
+
     if (email) {
         try {
             await sendPasswordResetEmail(auth, email);
-            alert("Password reset link sent to your email!");
+            alert(`Link sent to ${email}!\n\n IMPORTANT: Please check your Spam/Junk folder.`);
         } catch (error) {
-            alert("Error: " + error.message);
+            if (error.code === 'auth/user-not-found') {
+                alert("Error: This email is NOT registered in M-League.");
+            } else if (error.code === 'auth/invalid-email') {
+                alert("Error: Invalid email format.");
+            } else {
+                alert("Error: " + error.message);
+            }
         }
+    } else {
+        alert("Please enter an email to reset your password.");
     }
 });
 
