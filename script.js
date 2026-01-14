@@ -29,7 +29,34 @@ const forgotBtn = document.getElementById('forgotBtn');
 // TRAFFIC COP: Prevent listener from overwriting register data
 let isRegistering = false; 
 
+// MOCK DATA: Malaysian League Players
+const M_LEAGUE_PLAYERS = [
+    { id: 1, name: "Syihan Hazmi", pos: "GK", team: "JDT", price: 6.0 },
+    { id: 2, name: "Kalamullah Al-Hafiz", pos: "GK", team: "KDA", price: 5.0 },
+    { id: 3, name: "Samuel Somerville", pos: "GK", team: "SEL", price: 4.5 },
+    { id: 4, name: "Matthew Davies", pos: "DEF", team: "JDT", price: 6.5 },
+    { id: 5, name: "La'Vere Corbin-Ong", pos: "DEF", team: "JDT", price: 6.5 },
+    { id: 6, name: "Sharul Nazeem", pos: "DEF", team: "SEL", price: 5.5 },
+    { id: 7, name: "Azam Azmi", pos: "DEF", team: "TRG", price: 5.0 },
+    { id: 8, name: "Dominic Tan", pos: "DEF", team: "SAB", price: 5.0 },
+    { id: 9, name: "Khuzaimi Piee", pos: "DEF", team: "SEL", price: 4.5 },
+    { id: 10, name: "Arif Aiman", pos: "MID", team: "JDT", price: 9.0 },
+    { id: 11, name: "Faisal Halim", pos: "MID", team: "SEL", price: 8.5 },
+    { id: 12, name: "Brendan Gan", pos: "MID", team: "KL", price: 6.5 },
+    { id: 13, name: "Safawi Rasid", pos: "MID", team: "TRG", price: 7.0 },
+    { id: 14, name: "Hong Wan", pos: "MID", team: "JDT", price: 6.0 },
+    { id: 15, name: "Mukhairi Ajmal", pos: "MID", team: "SEL", price: 5.5 },
+    { id: 16, name: "Bergson da Silva", pos: "FWD", team: "JDT", price: 10.0 },
+    { id: 17, name: "Heberty", pos: "FWD", team: "JDT", price: 9.5 },
+    { id: 18, name: "Darren Lok", pos: "FWD", team: "SAB", price: 7.5 },
+    { id: 19, name: "Paulo Josue", pos: "FWD", team: "KL", price: 8.0 },
+    { id: 20, name: "Ifedayo Olusegun", pos: "FWD", team: "KDA", price: 8.0 }
+];
+let selectedSquadIds = new Set();
+const selectionScreen = document.getElementById('selection-screen');
+
 // --- 3. AUTH LOGIC ---
+
 
 // Toggle Login/Register Views
 toggleBtn.addEventListener('click', (e) => {
@@ -148,7 +175,11 @@ loginForm.addEventListener('submit', async (e) => {
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) data = docSnap.data();
         } catch (e) {
-            showToast("Data Error: " + e.message, 'error');
+            if (e.message.includes("offline")) {
+                showToast(" Please Create 'Firestore Database' in Firebase Console.", 'error');
+            } else {
+                showToast("Data Error: " + e.message, 'error');
+            }
         }
 
         showDashboard(data);
@@ -191,7 +222,11 @@ onAuthStateChanged(auth, async (user) => {
                 data = docSnap.data();
             }
         } catch (err) {
-            showToast("Data Error: " + err.message, 'error');
+            if (err.message.includes("offline")) {
+                showToast(" Please Create 'Firestore Database' in Firebase Console.", 'error');
+            } else {
+                showToast("Data Error: " + err.message, 'error');
+            }
         }
 
         // Show Dashboard even if DB read fails
@@ -209,14 +244,27 @@ onAuthStateChanged(auth, async (user) => {
 
 
 function showDashboard(data) {
-    authScreen.classList.add('hidden');
-    dashboardScreen.classList.remove('hidden');
-    
-    document.body.style.display = 'block'; 
-    document.body.style.background = '#F0F2F5';
+    // 1. Check if user already has a squad
+    if (!data.squad || data.squad.length === 0) {
+        // No squad? Show Selection Screen
+        authScreen.classList.add('hidden');
+        renderSelectionScreen();
+    } else {
+        // Has squad? Show Dashboard
+        authScreen.classList.add('hidden');
+        selectionScreen.classList.add('hidden');
+        dashboardScreen.classList.remove('hidden');
+        
+        document.body.style.display = 'block'; 
+        document.body.style.background = '#F0F2F5';
 
-    document.getElementById('displayTeamName').innerText = data.team_name;
-    document.getElementById('displayManagerName').innerText = data.manager_name;
+        document.getElementById('displayTeamName').innerText = data.team_name;
+        document.getElementById('displayManagerName').innerText = data.manager_name;
+        
+        // Update Pitch (Optional Visual)
+        const pitchText = document.querySelector('.pitch-visual p');
+        if(pitchText) pitchText.innerText = "Squad Ready (" + data.squad.length + " Players)";
+    }
 }
 
 // UI HELPER: Show Custom Toast
@@ -253,3 +301,75 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
         }
     });
 });
+
+// --- SQUAD SELECTION LOGIC ---
+function renderSelectionScreen() {
+    selectionScreen.classList.remove('hidden');
+    document.body.style.background = '#F0F2F5';
+    
+    const container = document.getElementById('players-container');
+    container.innerHTML = '';
+
+    const positions = ['GK', 'DEF', 'MID', 'FWD'];
+    
+    positions.forEach(pos => {
+        const section = document.createElement('div');
+        section.className = 'position-section';
+        section.innerHTML = `<h4 class="position-title">${pos}</h4><div class="player-grid" id="grid-${pos}"></div>`;
+        container.appendChild(section);
+
+        const grid = section.querySelector(`#grid-${pos}`);
+        M_LEAGUE_PLAYERS.filter(p => p.pos === pos).forEach(player => {
+            const card = document.createElement('div');
+            card.className = `player-card ${selectedSquadIds.has(player.id) ? 'selected' : ''}`;
+            card.onclick = () => togglePlayer(player.id, card);
+            card.innerHTML = `<h4>${player.name}</h4><span>${player.team}</span><span>RM ${player.price}M</span>`;
+            grid.appendChild(card);
+        });
+    });
+}
+
+function togglePlayer(id, cardElement) {
+    if (selectedSquadIds.has(id)) {
+        selectedSquadIds.delete(id);
+        cardElement.classList.remove('selected');
+    } else {
+        if (selectedSquadIds.size >= 15) {
+            showToast("Max 15 players allowed!", "error");
+            return;
+        }
+        selectedSquadIds.add(id);
+        cardElement.classList.add('selected');
+    }
+    
+    // Update Counter
+    const count = selectedSquadIds.size;
+    document.getElementById('squadCount').innerText = count;
+    document.getElementById('confirmSquadBtn').disabled = (count !== 15);
+}
+
+// Confirm Button Logic
+document.getElementById('confirmSquadBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('confirmSquadBtn');
+    btn.innerText = "Saving...";
+    
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("No user found");
+
+        const squadArray = Array.from(selectedSquadIds);
+        
+        // Save to Firestore with MERGE
+        await setDoc(doc(db, "users", user.uid), {
+            squad: squadArray
+        }, { merge: true });
+
+        // Reload to hit showDashboard again
+        location.reload();
+        
+    } catch (err) {
+        showToast("Save Failed: " + err.message, "error");
+        btn.innerText = "Confirm Squad";
+    }
+});
+
