@@ -330,22 +330,63 @@ function renderSelectionScreen() {
 }
 
 function togglePlayer(id, cardElement) {
+    // 1. Identify Player & Current Squad
+    const player = M_LEAGUE_PLAYERS.find(p => p.id === id);
+    const squad = Array.from(selectedSquadIds).map(sid => M_LEAGUE_PLAYERS.find(p => p.id === sid));
+
+    // 2. Remove if already selected
     if (selectedSquadIds.has(id)) {
         selectedSquadIds.delete(id);
         cardElement.classList.remove('selected');
-    } else {
-        if (selectedSquadIds.size >= 15) {
-            showToast("Max 15 players allowed!", "error");
-            return;
-        }
-        selectedSquadIds.add(id);
-        cardElement.classList.add('selected');
+        updateFooterStats();
+        return;
     }
+
+    // 3. VALIDATION RULES (FPL Logic)
     
-    // Update Counter
-    const count = selectedSquadIds.size;
-    document.getElementById('squadCount').innerText = count;
-    document.getElementById('confirmSquadBtn').disabled = (count !== 15);
+    // Rule A: Max 15 Players
+    if (squad.length >= 15) { 
+        return showToast("Squad full! Max 15 players.", "error"); 
+    }
+
+    // Rule B: Budget Cap (RM 100M)
+    const currentCost = squad.reduce((sum, p) => sum + p.price, 0);
+    if (currentCost + player.price > 100) { 
+        return showToast(`Budget exceeded! (RM ${currentCost + player.price}M > 100M)`, "error"); 
+    }
+
+    // Rule C: Team Limit (Max 3 per club)
+    if (squad.filter(p => p.team === player.team).length >= 3) { 
+        return showToast(`Max 3 players from ${player.team}!`, "error"); 
+    }
+
+    // Rule D: Position Structure (2 GK, 5 DEF, 5 MID, 3 FWD)
+    const LIMITS = { 'GK': 2, 'DEF': 5, 'MID': 5, 'FWD': 3 };
+    const currentPosCount = squad.filter(p => p.pos === player.pos).length;
+    if (currentPosCount >= LIMITS[player.pos]) { 
+        return showToast(`Max ${LIMITS[player.pos]} ${player.pos}s allowed!`, "error"); 
+    }
+
+    // 4. Success: Add Player
+    selectedSquadIds.add(id);
+    cardElement.classList.add('selected');
+    updateFooterStats();
+}
+
+// UI HELPER: Updates Counter & Budget Display
+function updateFooterStats() {
+    const squad = Array.from(selectedSquadIds).map(sid => M_LEAGUE_PLAYERS.find(p => p.id === sid));
+    const count = squad.length;
+    const cost = squad.reduce((sum, p) => sum + p.price, 0).toFixed(1);
+    
+    // Dynamic Footer Text
+    const counterBox = document.querySelector('.counter-box');
+    counterBox.innerHTML = `Selected: <b>${count}</b>/15 &nbsp;|&nbsp; Cost: <b>RM ${cost}M</b> / 100M`;
+    
+    // Validate Complete Squad
+    const btn = document.getElementById('confirmSquadBtn');
+    btn.disabled = (count !== 15);
+    btn.style.opacity = (count === 15) ? "1" : "0.5";
 }
 
 // Confirm Button Logic
