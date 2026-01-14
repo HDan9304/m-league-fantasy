@@ -26,6 +26,9 @@ const toggleBtn = document.getElementById('toggleBtn');
 const toggleText = document.getElementById('toggleText');
 const forgotBtn = document.getElementById('forgotBtn');
 
+// TRAFFIC COP: Prevent listener from overwriting register data
+let isRegistering = false; 
+
 // --- 3. AUTH LOGIC ---
 
 // Toggle Login/Register Views
@@ -41,29 +44,30 @@ toggleBtn.addEventListener('click', (e) => {
 
 // Forgot Password Logic
 forgotBtn.addEventListener('click', async () => {
-    // 1. Try to get email from the login box first
     let email = document.getElementById('loginEmail').value;
-    
-    // 2. If empty, ask the user
-    if (!email) {
-        email = prompt("Please enter your email address to reset password:");
-    }
+    if (!email) email = prompt("Please enter your email address to reset password:");
 
     if (email) {
+        // LOCK UI
+        forgotBtn.style.pointerEvents = 'none';
+        forgotBtn.innerText = "Sending...";
+
         try {
             await sendPasswordResetEmail(auth, email);
-            alert(`Link sent to ${email}!\n\n IMPORTANT: Please check your Spam/Junk folder.`);
+            showToast(`Link sent to ${email}! Check Spam folder.`, 'success');
         } catch (error) {
             if (error.code === 'auth/user-not-found') {
-                alert("Error: This email is NOT registered in M-League.");
+                showToast("Error: Email not registered.", 'error');
             } else if (error.code === 'auth/invalid-email') {
-                alert("Error: Invalid email format.");
+                showToast("Error: Invalid email format.", 'error');
             } else {
-                alert("Error: " + error.message);
+                showToast(error.message, 'error');
             }
+        } finally {
+            // UNLOCK UI (Always runs)
+            forgotBtn.style.pointerEvents = 'auto';
+            forgotBtn.innerText = "Forgot Password?";
         }
-    } else {
-        alert("Please enter an email to reset your password.");
     }
 });
 
@@ -72,14 +76,28 @@ registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('regEmail').value;
     const pass = document.getElementById('regPass').value;
+    const confirmPass = document.getElementById('regConfirmPass').value; // New
     const manager = document.getElementById('regManager').value;
     const team = document.getElementById('regTeam').value;
+
+    // Validation: Check Passwords match
+    if (pass !== confirmPass) {
+        showToast("Error: Passwords do not match.", 'error');
+        return;
+    }
+
+    // LOCK BUTTON
+    const btn = registerForm.querySelector('button');
+    const originalText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = "Creating Team...";
+    
+    isRegistering = true; // Stop Auth Listener from interfering
 
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         const user = userCredential.user;
 
-        // Save custom data (Manager Name, Team) to Firestore Database
         await setDoc(doc(db, "users", user.uid), {
             manager_name: manager,
             team_name: team,
@@ -88,32 +106,61 @@ registerForm.addEventListener('submit', async (e) => {
             budget: 100.0
         });
 
-        alert("Registration Successful! Welcome to the League.");
+        showToast("Registration Successful! Welcome.", 'success');
+        showDashboard({ manager_name: manager, team_name: team });
+        isRegistering = false; // Reset flag to allow future logins
         
-        // Fix: Manually show dashboard to prevent Race Condition
-        showDashboard({
-            manager_name: manager,
-            team_name: team
-        });
     } catch (error) {
-        alert("Registration Failed: " + error.message);
+        isRegistering = false; // Release the lock
+        
+        // UNLOCK ONLY ON ERROR (On success, we move to dashboard)
+        btn.disabled = false;
+        btn.innerText = originalText;
+
+        if (error.code === 'auth/email-already-in-use') {
+            showToast("Email already used. Please Login.", 'error');
+        } else {
+            showToast(error.message, 'error');
+        }
     }
 });
+
 
 // LOGIN
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     const pass = document.getElementById('loginPass').value;
+    
+    // LOCK BUTTON
+    const btn = loginForm.querySelector('button');
+    const originalText = btn.innerText;
+    btn.disabled = true;
+    btn.innerText = "Verifying...";
 
     try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        // Note: onAuthStateChanged will handle the redirect
+        const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+        
+        // Manual Force Load (Fixes UI Deadlock)
+        const docRef = doc(db, "users", userCredential.user.uid);
+        let data = { manager_name: "Manager", team_name: "My Team" };
+        try {
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) data = docSnap.data();
+        } catch (e) {
+            showToast("Data Error: " + e.message, 'error');
+        }
+
+        showDashboard(data);
     } catch (error) {
+        // Error: Unlock so they can try again
+        btn.disabled = false;
+        btn.innerText = originalText;
+
         if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found') {
-            alert("Account not found. Please Register for a new team first.");
+            showToast("Account not found. Please Register first.", 'error');
         } else {
-            alert("Login Failed: " + error.message);
+            showToast("Login Failed: " + error.message, 'error');
         }
     }
 });
@@ -128,6 +175,9 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 // --- 4. STATE LISTENER (The Brain) ---
 // This runs automatically whenever the app starts or user logs in/out
 onAuthStateChanged(auth, async (user) => {
+    // Stop if we are in the middle of registering
+    if (isRegistering) return;
+
     const loader = document.getElementById('loading-overlay');
     
     if (user) {
@@ -141,7 +191,7 @@ onAuthStateChanged(auth, async (user) => {
                 data = docSnap.data();
             }
         } catch (err) {
-            console.log("Offline or Error:", err);
+            showToast("Data Error: " + err.message, 'error');
         }
 
         // Show Dashboard even if DB read fails
@@ -168,3 +218,38 @@ function showDashboard(data) {
     document.getElementById('displayTeamName').innerText = data.team_name;
     document.getElementById('displayManagerName').innerText = data.manager_name;
 }
+
+// UI HELPER: Show Custom Toast
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerText = message;
+    container.appendChild(toast);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// UI HELPER: Toggle Password Visibility
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const input = e.currentTarget.previousElementSibling;
+        const isPassword = input.getAttribute('type') === 'password';
+        
+        // 1. Toggle Type
+        input.setAttribute('type', isPassword ? 'text' : 'password');
+
+        // 2. Toggle Icon (Swap SVG)
+        if (isPassword) {
+            // Show "Eye Slash" (Hidden state icon)
+            e.currentTarget.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+        } else {
+            // Show "Eye" (Visible state icon)
+            e.currentTarget.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        }
+    });
+});

@@ -13,6 +13,8 @@
         Loading M-League...
     </div>
 
+    <div id="toast-container"></div>
+
     <div id="auth-screen" class="login-container">
         <div class="brand-header">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0E1E5B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -29,8 +31,13 @@
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
-        </div>
+                <div class="password-wrapper">
+    <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
+    <span class="toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </span>
+</div>
+            </div>
         <p id="forgotBtn" style="text-align: right; color: #0E1E5B; font-size: 0.8rem; margin-bottom: 15px; cursor: pointer; text-decoration: underline;">Forgot Password?</p>
         <button type="submit" class="btn-primary">Masuk / Login</button>
         </form>
@@ -50,7 +57,21 @@
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="regPass" class="form-control" placeholder="Create Password" required>
+                <div class="password-wrapper">
+    <input type="password" id="regPass" class="form-control" placeholder="••••••••" required>
+    <span class="toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </span>
+</div>
+            </div>
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <div class="password-wrapper">
+    <input type="password" id="regConfirmPass" class="form-control" placeholder="••••••••" required>
+    <span class="toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+    </span>
+</div>
             </div>
             <button type="submit" class="btn-primary">Daftar / Register</button>
         </form>

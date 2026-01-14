@@ -119,3 +119,50 @@ body {
     display: flex; justify-content: center; align-items: center;
     color: white; font-weight: bold; font-size: 1.2rem;
 }
+
+/* Toast Notifications */
+#toast-container {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    z-index: 10000; width: 90%; max-width: 400px; text-align: center;
+}
+.toast {
+    padding: 16px; margin-bottom: 10px; border-radius: 8px; color: white;
+    font-size: 0.9rem; font-weight: 600; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease-out forwards;
+}
+.toast.success { background-color: #2E7D32; } /* Deep Green */
+.toast.error { background-color: #D21034; }   /* Flag Red */
+@keyframes slideIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Password Eye Styles */
+.password-wrapper { position: relative; }
+.toggle-btn { 
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%); 
+    cursor: pointer; opacity: 0.6; font-size: 1.2rem; background: none; border: none;
+}
+
+/* Loading State for Buttons */
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background-color: #ccc; /* Optional: Grey out slightly */
+    color: #555;
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 1.5rem;       /* Reduce padding (was 2.5rem) */
+        margin: 10px;          /* Reduce outer margin */
+        width: 95%;            /* Take almost full width */
+        max-width: none;       /* Allow it to fill the screen */
+    }
+    
+    .brand-header h1 {
+        font-size: 1.3rem;     /* Slightly smaller title */
+    }
+    
+    .brand-header svg {
+        width: 40px; height: 40px; /* Resize Logo */
+    }
+} 
