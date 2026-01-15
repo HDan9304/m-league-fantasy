@@ -313,9 +313,19 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
 // --- SQUAD SELECTION LOGIC ---
 
 // Sidebar Toggle Logic
-document.getElementById('sidebarToggle').addEventListener('click', () => {
-    document.querySelector('.selection-sidebar').classList.toggle('open');
-});
+const sidebarEl = document.querySelector('.selection-sidebar');
+const backdropEl = document.getElementById('sidebarBackdrop');
+
+function toggleSidebar(show) {
+    sidebarEl.classList.toggle('open', show);
+    backdropEl.classList.toggle('active', show);
+}
+
+document.getElementById('sidebarToggle').addEventListener('click', () => toggleSidebar(true));
+document.getElementById('sidebarCloseBtn').addEventListener('click', () => toggleSidebar(false));
+
+// UX FIX: Click outside to close
+backdropEl.addEventListener('click', () => toggleSidebar(false));
 
 function renderSelectionScreen(data) {
     selectionScreen.classList.remove('hidden');

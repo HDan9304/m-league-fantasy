@@ -181,11 +181,21 @@ button:disabled {
     display: flex; flex-direction: column; padding: 24px;
     box-shadow: 4px 0 15px rgba(0,0,0,0.15); z-index: 100;
     
-    /* COLLAPSIBLE LOGIC (Desktop) */
-    margin-left: -260px; /* Hide off-screen by default */
-    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* UX FIX: Unified Overlay Model (GPU Accelerated) */
+    position: absolute; top: 0; left: 0; height: 100%;
+    transform: translateX(-100%); /* Start Hidden */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.selection-sidebar.open { margin-left: 0; } /* Show when toggled */
+.selection-sidebar.open { transform: translateX(0); } /* Slide In */
+
+/* NEW: Dimmed Backdrop */
+.sidebar-backdrop {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 90;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    backdrop-filter: blur(2px); /* Pro Blur Effect */
+}
+.sidebar-backdrop.active { opacity: 1; pointer-events: auto; }
 
 /* Burger Button Style */
 .btn-burger {
@@ -194,44 +204,85 @@ button:disabled {
 }
 .btn-burger:hover { background: rgba(255,255,255,0.1); }
 
-/* ... (Keep existing inner sidebar styles like .sidebar-logo, .sidebar-nav etc) ... */
+/* Sidebar Navigation Items (Glassmorphism & Physics) */
+.sidebar-nav {
+    background: transparent; border: none; color: rgba(255,255,255,0.7);
+    text-align: left; padding: 12px 16px; font-weight: 700; font-size: 0.95rem;
+    cursor: pointer; border-radius: 8px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px; 
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth Physics */
+    border-left: 4px solid transparent; /* Anchor for active state */
+    width: 100%; /* Ensure full width */
+}
 
-/* Mobile: Sidebar becomes "App-Like" Bottom Navigation */
-/* Mobile: Sidebar becomes "App-Like" Bottom Navigation */
+.sidebar-nav:hover { 
+    background: rgba(255,255,255,0.05); color: white; 
+    transform: translateX(6px); /* Tactile Slide Interaction */
+}
+
+.sidebar-nav.active { 
+    /* Glassmorphism + Glow */
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(4px); color: white; 
+    border-left-color: var(--color-accent-yellow);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+}
+
+/* Icon Glow for Active State */
+.sidebar-nav.active svg { stroke: var(--color-accent-yellow); filter: drop-shadow(0 0 4px rgba(255, 209, 0, 0.6)); }
+
+/* Default: Hide Close Button on Desktop */
+.sidebar-close-btn { display: none; }
+
+/* Mobile: Sidebar behavior */
 @media (max-width: 768px) {
-    .selection-modal { flex-direction: column-reverse; } 
-    
+    /* 1. Sidebar as Overlay Drawer (Matches Desktop Style) */
     .selection-sidebar {
-        width: 100%; height: auto; min-height: 65px; padding: 8px 0;
-        flex-direction: row; align-items: center; justify-content: space-evenly;
-        background: white; border-top: 1px solid #eee;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-        margin-left: 0; /* RESET: Always visible on mobile */
+        position: absolute; top: 0; left: 0; height: 100%;
+        box-shadow: 5px 0 20px rgba(0,0,0,0.4);
     }
-    
-    .btn-burger { display: none; } /* Hide toggle on mobile */
 
-    .sidebar-nav {
-        flex-direction: column; gap: 4px; padding: 6px; margin: 0;
-        font-size: 0.7rem; color: #999; border-radius: 8px;
-        min-width: 70px;
-    }
-    .sidebar-nav svg { width: 22px; height: 22px; } /* Larger touch targets */
+    /* 2. Ensure Burger Button is Visible */
+    .btn-burger { display: flex; }
     
-    .sidebar-nav.active { 
-        background: transparent; color: var(--color-primary-blue); box-shadow: none; 
-    }
-    .sidebar-nav.active svg { stroke: var(--color-primary-blue); stroke-width: 2.5px; }
+    /* 3. Adjust Header Text size */
+    .selection-header h3 { font-size: 1.1rem; }
     
-    .sidebar-nav.logout { margin-top: 0; color: #999; }
-    .sidebar-nav.logout:hover { background: transparent; color: var(--color-alert-red); }
-} /* <--- CORRECT: Media query closes here */
+    /* 4. Reset Nav Items */
+    .sidebar-nav { font-size: 0.9rem; }
+
+    /* 5. Position Close Button (Now correctly INSIDE the mobile block) */
+    .sidebar-close-btn { 
+        display: block; position: absolute; top: 20px; right: 20px;
+        background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer;
+    }
+}
+
+/* NEW: Flex Column to hold Header + Scrollable Content */
+.selection-right-column {
+    flex: 1; display: flex; flex-direction: column;
+    height: 100%; overflow: hidden; position: relative;
+}
 
 .selection-header {
-    background: var(--color-primary-blue); color: white; padding: 15px;
-    position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    background: var(--color-primary-blue); color: white; 
+    padding: 15px;
+    /* FIX: Add Safe Area padding for Mobile Notches */
+    padding-top: max(15px, env(safe-area-inset-top)); 
+    
+    /* UX FIX: No longer sticky, it's now a structural flex item */
+    position: relative; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     display: flex; justify-content: space-between; align-items: center;
+    flex-shrink: 0; 
 }
+
+/* FIX: Restore Scrollable Area */
+.selection-main-wrapper {
+    flex: 1; overflow-y: auto; position: relative;
+    padding-bottom: 40px; 
+}
+
+/* ... (Keep .position-section, .player-grid, .player-card, etc. as they were) ... */
 .position-section { padding: 15px; }
 .position-title { color: var(--color-primary-blue); font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #ddd; }
 .player-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
@@ -245,12 +296,15 @@ button:disabled {
 .player-card span { font-size: 0.8rem; color: #666; display: block; }
 
 .selection-footer {
-    position: relative; /* Static position (flows below content) */
+    position: relative; 
     width: 100%; margin-top: 20px;
-    background: white; padding: 15px; border-top: 1px solid #ddd;
+    background: white; padding: 15px; 
+    /* FIX: Add Safe Area padding for bottom swipe bar */
+    padding-bottom: max(15px, env(safe-area-inset-bottom));
+    
+    border-top: 1px solid #ddd;
     display: flex; justify-content: space-between; align-items: center;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    /* Removed z-index and fixed bottom positioning */
 }
 .counter-box { font-weight: bold; color: var(--color-primary-blue); }
 
