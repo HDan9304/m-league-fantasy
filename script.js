@@ -46,7 +46,7 @@ async function initGameData() {
         showToast("System Error: Could not load player data.", "error");
     }
 }
-initGameData(); // Run immediately
+const gameDataReady = initGameData(); // Run & Capture Promise to wait for later
 const selectionScreen = document.getElementById('selection-screen');
 
 // --- 3. AUTH LOGIC ---
@@ -202,6 +202,8 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 onAuthStateChanged(auth, async (user) => {
     // Stop if we are in the middle of registering
     if (isRegistering) return;
+
+    await gameDataReady; // Fix: Wait for JSON to load before rendering UI
 
     const loader = document.getElementById('loading-overlay');
     
