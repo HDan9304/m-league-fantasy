@@ -1,12 +1,15 @@
 {
     "JDT": "assets/kits/JDT.png",
-    "SEL": "assets/kits/SEL.png",
-    "KDA": "assets/kits/KDA.png",
-    "TRG": "assets/kits/TRG.png",
-    "KL": "assets/kits/KL.png",
-    "SAB": "assets/kits/SAB.png",
+    "DPMM": "assets/kits/DPMM.png",
+    "IMG": "assets/kits/IMG.png",
+    "KLC": "assets/kits/KLC.png",
+    "KUC": "assets/kits/KUC.png",
+    "MEL": "assets/kits/MEL.png",
+    "N9": "assets/kits/N9.png",
+    "PDRM": "assets/kits/PDRM.png",
     "PEN": "assets/kits/PEN.png",
-    "PRK": "assets/kits/PRK.png",
-    "NS": "assets/kits/NS.png",
-    "KEL": "assets/kits/KEL.png"
+    "SAB": "assets/kits/SAB.png",
+    "SEL": "assets/kits/SEL.png",
+    "TRG": "assets/kits/TRG.png",
+    "TRW": "assets/kits/TRW.png",
 }
