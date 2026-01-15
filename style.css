@@ -357,7 +357,7 @@ button:disabled {
 
 .slot-price {
     /* UX FIX: Centered Pill Badge */
-    position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+    position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
     background: var(--color-accent-yellow); color: var(--color-primary-blue);
     font-size: 0.65rem; padding: 2px 8px; border-radius: 12px;
     font-weight: 800; z-index: 10;
@@ -367,20 +367,23 @@ button:disabled {
 }
 
 .slot-kit { 
-    width: 60px; height: 60px; /* Slightly adjusted for better fit */
+    width: 68px; height: 68px; /* Larger kit for better visibility */
     object-fit: contain; 
-    margin-top: 18px; /* Pushes kit down to clear the price badge */
-    margin-bottom: -2px; 
-    position: relative; z-index: 1; 
+    margin-top: 20px; /* Ensures top is clean for the Price Badge */
+    margin-bottom: -14px; /* INTENTIONAL: Pulls kit behind the name bar */
+    position: relative; z-index: 1; /* Layer behind name */
     filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4));
 }
 
 .slot-name {
     font-size: 0.7rem; font-weight: 700; color: #111;
-    width: 100%; background: rgba(255,255,255,0.9);
-    padding: 2px 0; text-shadow: none;
-    white-space: nowrap; overflow: hidden;
-    position: relative; z-index: 2;
+    width: 100%; 
+    background: #FFFFFF; /* Solid background to cleanly "cut" the kit */
+    padding: 1px 0; /* Slightly taller for better legibility */
+    text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    position: relative; z-index: 3; /* Ensures it covers the bottom of the kit */
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1); /* Subtle separation from kit */
 }
 
 .slot-fix {
