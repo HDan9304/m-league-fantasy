@@ -190,11 +190,12 @@ button:disabled {
 .player-card span { font-size: 0.8rem; color: #666; display: block; }
 
 .selection-footer {
-    position: fixed; bottom: 0; left: 0; width: 100%;
+    position: relative; /* Static position (flows below content) */
+    width: 100%; margin-top: 20px;
     background: white; padding: 15px; border-top: 1px solid #ddd;
     display: flex; justify-content: space-between; align-items: center;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    z-index: 5000; /* Force footer above pitch lines */
+    /* Removed z-index and fixed bottom positioning */
 }
 .counter-box { font-weight: bold; color: var(--color-primary-blue); }
 

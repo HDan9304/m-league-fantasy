@@ -470,7 +470,8 @@ function openPlayerActionModal(player) {
     
     // Populate Modal
     document.getElementById('actionName').innerText = player.name;
-    document.getElementById('actionInfo').innerText = `${player.pos} • ${player.team} • RM ${player.price}M`;
+    // Use innerHTML and &bull; to prevent encoding errors (?)
+    document.getElementById('actionInfo').innerHTML = `${player.pos} &bull; ${player.team} &bull; RM ${player.price}M`;
     document.getElementById('actionKit').src = TEAM_KITS[player.team] || 'assets/kits/default.png';
 }
 
