@@ -19,8 +19,6 @@
         { "id": 12, "name": "Eddy Israfilov", "pos": "DEF", "team": "JDT", "price": 6.4 },
         { "id": 13, "name": "Jonathan Silva", "pos": "DEF", "team": "JDT", "price": 7.2 },
         { "id": 14, "name": "Jon Irazábal", "pos": "DEF", "team": "JDT", "price": 6.9 },
-        { "id": 15, "name": "Ibrahim Manusi", "pos": "MID", "team": "JDT", "price": 4.8 },
-        
-        
+        { "id": 15, "name": "Ibrahim Manusi", "pos": "MID", "team": "JDT", "price": 4.8 }
     ]
 }
