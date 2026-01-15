@@ -352,49 +352,39 @@ button:disabled {
 }
 
 .slot-price {
-    background: var(--color-primary-blue); color: var(--color-accent-yellow);
-    font-size: 0.75rem; padding: 2px 6px; border-radius: 4px;
-    font-weight: 800; margin-top: -6px; 
-    /* FIX: Position relative is required for z-index to work */
+    background: transparent; color: var(--color-primary-blue); /* No Box, Clean Text */
+    font-size: 0.8rem; padding: 2px 0; 
+    font-weight: 900; margin-top: -4px; 
     position: relative; z-index: 10; 
+    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
 }
 
 .slot-kit { 
-    width: 60px; height: 60px; /* Tuned to 60px to fit perfectly in 105px height */
+    width: 60px; height: 60px; 
     object-fit: contain; margin: 0; 
     position: relative; z-index: 1; 
-    flex-shrink: 0; /* Prevents kit from disappearing */
+    flex-shrink: 0; 
 } 
-
-/* FOOTER PILL STYLES */
-.selection-footer {
-    position: relative; width: 100%; margin-top: 10px;
-    background: transparent; padding: 10px 20px; border: none; box-shadow: none;
-    display: block;
-}
-.selection-footer button {
-    border-radius: 50px !important;
-    height: 50px;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
 
 .slot-name {
     font-size: 0.75rem; font-weight: 700; color: #1a1a1a;
     white-space: nowrap; overflow: hidden; max-width: 100%;
-    background: rgba(255,255,255,0.9); width: 100%;
-    /* Overlap Magic: Pull name up to cover bottom of shirt */
+    /* Glass Effect: Blur + Transparency */
+    background: rgba(255,255,255,0.55); width: 100%;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     margin-top: -15px; position: relative; z-index: 2;
 }
 
 .slot-fix {
     font-size: 0.7rem; width: 100%; padding: 2px 0;
     color: white; font-weight: 700; text-transform: uppercase;
-    border-radius: 0 0 4px 4px;
+    /* Radius Match: 6px to match card corners perfectly */
+    border-radius: 0 0 6px 6px;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 }
-.slot-fix.home { background-color: #2E7D32; }
-.slot-fix.away { background-color: #D21034; }
+.slot-fix.home { background-color: rgba(46, 125, 50, 0.75); } /* Blur Green */
+.slot-fix.away { background-color: rgba(210, 16, 52, 0.75); } /* Blur Red */
+
 
 /* PLAYER ACTION MODAL */
 .action-kit { 
