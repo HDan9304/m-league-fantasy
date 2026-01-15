@@ -169,7 +169,25 @@
             <div class="counter-box">Selected: <span id="squadCount">0</span>/15</div>
             <button id="confirmSquadBtn" class="btn-primary" style="width: auto; margin: 0;" disabled>Confirm Squad</button>
         </div>
+
+        <button id="viewPitchBtn" class="fab-btn">⚽ View Pitch</button>
+
+        <div id="pitch-modal" class="pitch-overlay hidden">
+            <div class="pitch-content">
+                <div class="pitch-header">
+                    <h3>Squad Visualizer</h3>
+                    <button id="closePitchBtn">✕</button>
+                </div>
+                <div class="modal-pitch">
+                    <div class="pitch-row" id="row-GK"></div>
+                    <div class="pitch-row" id="row-DEF"></div>
+                    <div class="pitch-row" id="row-MID"></div>
+                    <div class="pitch-row" id="row-FWD"></div>
+                </div>
+            </div>
+        </div>
     </div>
+
 
     <script type="module" src="script.js"></script>
 </body>

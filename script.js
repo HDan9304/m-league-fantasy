@@ -376,6 +376,7 @@ function togglePlayer(id, cardElement) {
     selectedSquadIds.add(id);
     cardElement.classList.add('selected');
     updateFooterStats();
+    updatePitchView(); // Refresh the visual modal
 }
 
 // UI HELPER: Updates Counter & Budget Display
@@ -430,3 +431,55 @@ document.getElementById('confirmSquadBtn').addEventListener('click', async () =>
     }
 });
 
+// --- PITCH MODAL LOGIC ---
+const pitchModal = document.getElementById('pitch-modal');
+
+document.getElementById('viewPitchBtn').addEventListener('click', () => {
+    pitchModal.classList.remove('hidden');
+    updatePitchView(); // Ensure fresh data
+});
+
+document.getElementById('closePitchBtn').addEventListener('click', () => {
+    pitchModal.classList.add('hidden');
+});
+
+function updatePitchView() {
+    // 1. Get Selected Players Objects
+    const squad = Array.from(selectedSquadIds).map(sid => M_LEAGUE_PLAYERS.find(p => p.id === sid));
+    
+    // 2. Define Structure
+    const structure = {
+        'GK': { count: 2, el: document.getElementById('row-GK') },
+        'DEF': { count: 5, el: document.getElementById('row-DEF') },
+        'MID': { count: 5, el: document.getElementById('row-MID') },
+        'FWD': { count: 3, el: document.getElementById('row-FWD') }
+    };
+
+    // 3. Render Each Row
+    Object.keys(structure).forEach(pos => {
+        const rowData = structure[pos];
+        const playersInPos = squad.filter(p => p.pos === pos);
+        rowData.el.innerHTML = ''; // Clear Row
+
+        // Create Slots (Filled + Empty)
+        for (let i = 0; i < rowData.count; i++) {
+            const slot = document.createElement('div');
+            const player = playersInPos[i]; // Get player if exists
+            
+            if (player) {
+                // FILLED SLOT
+                slot.className = 'pitch-slot filled';
+                slot.innerHTML = `
+                    <div style="font-size:1rem;"></div>
+                    <strong>${player.name.split(' ').pop()}</strong>
+                    <span>${player.team}</span>
+                `;
+            } else {
+                // EMPTY GHOST SLOT
+                slot.className = 'pitch-slot';
+                slot.innerHTML = `<span>${pos}</span>`;
+            }
+            rowData.el.appendChild(slot);
+        }
+    });
+}
