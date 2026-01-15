@@ -298,14 +298,57 @@ button:disabled {
 .selection-footer {
     position: relative; 
     width: 100%; margin-top: 20px;
-    background: white; padding: 15px; 
-    /* FIX: Add Safe Area padding for bottom swipe bar */
+    background: transparent; /* UX FIX: Removed white box */
+    padding: 10px 15px; 
     padding-bottom: max(15px, env(safe-area-inset-bottom));
-    
-    border-top: 1px solid #ddd;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    border: none; box-shadow: none;
+    pointer-events: none; /* Let clicks pass through the gap */
 }
+
+/* Footer Action Buttons Container */
+.footer-actions {
+    display: flex; gap: 10px; width: 100%; max-width: 500px; margin: 0 auto;
+    pointer-events: auto; /* Re-enable clicks on buttons */
+}
+
+/* Common Button Base */
+.btn-action-reset, .btn-action-confirm, .btn-action-auto {
+    border: none; padding: 12px 16px; border-radius: 50px; /* UX FIX: Pill Shape */
+    font-weight: 800; font-size: 0.9rem; cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Action: Auto Pick (Magic Gradient) */
+.btn-action-auto {
+    background: linear-gradient(135deg, #7b1fa2 0%, #4a148c 100%);
+    color: white; 
+}
+.btn-action-auto:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(123, 31, 162, 0.4); }
+
+/* Secondary Action: Reset */
+.btn-action-reset {
+    background: white; color: var(--color-alert-red);
+    border: 1px solid #ffcdd2;
+}
+.btn-action-reset:hover { background: #ffebee; transform: translateY(-2px); }
+
+/* Primary Action: Confirm */
+.btn-action-confirm {
+    background: linear-gradient(135deg, var(--color-primary-blue) 0%, #1a237e 100%);
+    color: var(--color-accent-yellow); flex: 1.5;
+}
+.btn-action-confirm:hover { 
+    filter: brightness(1.1); transform: translateY(-2px); 
+    box-shadow: 0 6px 20px rgba(14, 30, 91, 0.4); 
+}
+.btn-action-confirm:disabled { 
+    background: #e0e0e0; color: #999; cursor: not-allowed; 
+    transform: none; box-shadow: none; 
+}
+
 .counter-box { font-weight: bold; color: var(--color-primary-blue); }
 
 /* Selection Rules Banner */

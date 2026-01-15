@@ -450,6 +450,49 @@ document.getElementById('confirmSquadBtn').addEventListener('click', async () =>
     }
 });
 
+// NEW: Auto Pick Logic (Smart Randomizer)
+document.getElementById('autoPickBtn').addEventListener('click', () => {
+    // 1. Clear current squad
+    selectedSquadIds.clear();
+    
+    const limits = { 'GK': 2, 'DEF': 5, 'MID': 5, 'FWD': 3 };
+    const maxPerTeam = 3;
+    const budget = 100;
+    
+    // Helper: Random shuffle
+    const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
+    
+    // 2. Iterate positions and fill
+    for (const pos in limits) {
+        const required = limits[pos];
+        const candidates = shuffle(M_LEAGUE_PLAYERS.filter(p => p.pos === pos));
+        
+        let added = 0;
+        for (const player of candidates) {
+            if (added >= required) break;
+            
+            // Check Constraints (Team Limit & Budget Safe Check)
+            const currentSquad = Array.from(selectedSquadIds).map(id => M_LEAGUE_PLAYERS.find(p => p.id === id));
+            const teamCount = currentSquad.filter(p => p.team === player.team).length;
+            const currentCost = currentSquad.reduce((sum, p) => sum + p.price, 0);
+            
+            // Heuristic: Don't spend too much early (leave avg 4.5m per remaining slot)
+            const remainingSlots = 15 - (currentSquad.length + 1);
+            const safeBudget = budget - (remainingSlots * 4.0); 
+            
+            if (teamCount < maxPerTeam && (currentCost + player.price <= safeBudget)) {
+                selectedSquadIds.add(player.id);
+                added++;
+            }
+        }
+    }
+
+    // 3. Update UI
+    updateFooterStats();
+    updatePitchView();
+    showToast("Squad auto-picked!", "success");
+});
+
 // NEW: Reset Button Logic
 document.getElementById('resetBtn').addEventListener('click', () => {
     if(selectedSquadIds.size === 0) return;
