@@ -346,19 +346,39 @@ button:disabled {
 .pitch-slot.filled {
     background: linear-gradient(135deg, #ffffff 0%, #f0f2f5 100%);
     border: 1px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    padding: 2px; justify-content: space-between;
+    padding: 2px; 
+    /* CRITICAL FIX: 'center' forces items to group inside the 105px box */
+    justify-content: center; 
 }
+
 .slot-price {
     background: var(--color-primary-blue); color: var(--color-accent-yellow);
-    font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; /* Larger Price Tag */
-    font-weight: 800; margin-top: -6px; z-index: 2;
+    font-size: 0.75rem; padding: 2px 6px; border-radius: 4px;
+    font-weight: 800; margin-top: -6px; 
+    /* FIX: Position relative is required for z-index to work */
+    position: relative; z-index: 10; 
 }
-/* Updated: Bigger Size & Layering */
+
 .slot-kit { 
-    width: 72px; height: 72px; 
+    width: 60px; height: 60px; /* Tuned to 60px to fit perfectly in 105px height */
     object-fit: contain; margin: 0; 
-    position: relative; z-index: 1; /* Sit behind the name bar */
+    position: relative; z-index: 1; 
+    flex-shrink: 0; /* Prevents kit from disappearing */
 } 
+
+/* FOOTER PILL STYLES */
+.selection-footer {
+    position: relative; width: 100%; margin-top: 10px;
+    background: transparent; padding: 10px 20px; border: none; box-shadow: none;
+    display: block;
+}
+.selection-footer button {
+    border-radius: 50px !important;
+    height: 50px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
 .slot-name {
     font-size: 0.75rem; font-weight: 700; color: #1a1a1a;
@@ -367,13 +387,14 @@ button:disabled {
     /* Overlap Magic: Pull name up to cover bottom of shirt */
     margin-top: -15px; position: relative; z-index: 2;
 }
+
 .slot-fix {
-    font-size: 0.7rem; width: 100%; padding: 2px 0; /* Larger Fixture Text */
+    font-size: 0.7rem; width: 100%; padding: 2px 0;
     color: white; font-weight: 700; text-transform: uppercase;
     border-radius: 0 0 4px 4px;
 }
-.slot-fix.home { background-color: #2E7D32; } /* Green for Home */
-.slot-fix.away { background-color: #D21034; } /* Red for Away */
+.slot-fix.home { background-color: #2E7D32; }
+.slot-fix.away { background-color: #D21034; }
 
 /* PLAYER ACTION MODAL */
 .action-kit { 

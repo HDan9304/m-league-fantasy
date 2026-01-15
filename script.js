@@ -391,8 +391,7 @@ function updateFooterStats() {
     if (balance < 0) bankEl.style.color = "#D21034"; // Red if negative
     else bankEl.style.color = "#0E1E5B";
 
-    // Update Footer (Bottom Bar)
-    document.querySelector('.counter-box').innerHTML = `Selected: <b>${count}</b>/15`;
+    // REMOVED: .counter-box update (Since we deleted that HTML element)
     
     // Validate Complete Squad
     const btn = document.getElementById('confirmSquadBtn');
@@ -424,6 +423,17 @@ document.getElementById('confirmSquadBtn').addEventListener('click', async () =>
     } catch (err) {
         showToast("Save Failed: " + err.message, "error");
         btn.innerText = "Confirm Squad";
+    }
+});
+
+// NEW: Reset Button Logic
+document.getElementById('resetBtn').addEventListener('click', () => {
+    if(selectedSquadIds.size === 0) return;
+    if(confirm("Reset all selections?")) {
+        selectedSquadIds.clear();
+        updateFooterStats();
+        updatePitchView();
+        showToast("Squad cleared.", "success");
     }
 });
 
