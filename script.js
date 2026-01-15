@@ -486,8 +486,9 @@ function getNextOpponent(myTeam) {
     const match = FIXTURES.find(m => m.home === myTeam || m.away === myTeam);
     if (!match) return "-"; // No game this week
     
-    if (match.home === myTeam) return "v " + match.away; // Home Game
-    return "@ " + match.home; // Away Game
+    // Standard Football Notation: (H) for Home, (A) for Away
+    if (match.home === myTeam) return match.away + " (H)"; 
+    return match.home + " (A)"; 
 }
 
 function updatePitchView() {
@@ -521,10 +522,10 @@ function updatePitchView() {
                 // FILLED SLOT (Revamped)
                 slot.className = 'pitch-slot filled';
                 slot.innerHTML = `
-                    <div class="slot-price">RM ${player.price}</div>
-                    <img src="${TEAM_KITS[player.team] || 'assets/kits/default.png'}" class="slot-kit" loading="lazy" width="32" height="32" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1865/1865147.png'">
+                    <div class="slot-price">RM ${player.price}M</div>
+                    <img src="${TEAM_KITS[player.team] || 'assets/kits/default.png'}" class="slot-kit" loading="lazy" width="50" height="50" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1865/1865147.png'">
                     <div class="slot-name">${player.name.split(' ').pop()}</div>
-                    <div class="slot-fix ${getNextOpponent(player.team).includes('v') ? 'home' : 'away'}">
+                    <div class="slot-fix ${getNextOpponent(player.team).includes('(H)') ? 'home' : 'away'}">
                         ${getNextOpponent(player.team)}
                     </div>
                 `;
