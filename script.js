@@ -317,24 +317,15 @@ function renderSelectionScreen(data) {
     const container = document.getElementById('players-container');
     container.innerHTML = '';
 
-    const positions = ['GK', 'DEF', 'MID', 'FWD'];
-    
-    positions.forEach(pos => {
-        const section = document.createElement('div');
-        section.className = 'position-section';
-        section.innerHTML = `<h4 class="position-title">${pos}</h4><div class="player-grid" id="grid-${pos}"></div>`;
-        container.appendChild(section);
-
-        const grid = section.querySelector(`#grid-${pos}`);
-        M_LEAGUE_PLAYERS.filter(p => p.pos === pos).forEach(player => {
-            const card = document.createElement('div');
-            card.className = `player-card ${selectedSquadIds.has(player.id) ? 'selected' : ''}`;
-            card.onclick = () => togglePlayer(player.id, card);
-            card.innerHTML = `<h4>${player.name}</h4><span>${player.team}</span><span>RM ${player.price}M</span>`;
-            grid.appendChild(card);
-        });
-    });
+    // DISABLED: Player Selection List (Pending Feature)
+    container.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: #888;">
+            <p>Player Market Opening Soon...</p>
+            <p>Please use the <b>View Pitch</b> button to visualize formation.</p>
+        </div>
+    `;
 }
+
 
 function togglePlayer(id, cardElement) {
     // 1. Identify Player & Current Squad

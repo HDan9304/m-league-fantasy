@@ -212,7 +212,8 @@ button:disabled {
     background: #FFF3E0; color: #E65100;
     margin: 0 15px 15px 15px; padding: 10px 15px;
     border-radius: 6px; font-size: 0.9rem; font-weight: 700;
-    .deadline-banner::before { content: "⏳"; margin-right: 10px; font-size: 1.1rem; }
+}
+.deadline-banner::before { content: "⏳"; margin-right: 10px; font-size: 1.1rem; }
 
 /* Stats HUD Card */
 .selection-stats-card {
@@ -284,3 +285,29 @@ button:disabled {
     color: var(--color-primary-blue);
 }
 .pitch-slot.filled strong { display: block; font-size: 0.7rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 55px; }
+
+/* FIELD MARKINGS */
+.pitch-lines {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;
+    z-index: 1; /* Behind players */
+}
+.line-center {
+    position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: rgba(255,255,255,0.4);
+}
+.box-penalty-top {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 70%; height: 16%; border: 2px solid rgba(255,255,255,0.4); border-top: none;
+}
+.box-goal-top {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 30%; height: 6%; border: 2px solid rgba(255,255,255,0.4); border-top: none;
+}
+/* Mirror for bottom (Optional, assuming full pitch view) */
+.box-penalty-bottom {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 70%; height: 16%; border: 2px solid rgba(255,255,255,0.4); border-bottom: none;
+}
+.box-goal-bottom {
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 30%; height: 6%; border: 2px solid rgba(255,255,255,0.4); border-bottom: none;
+}
