@@ -344,51 +344,50 @@ button:disabled {
 .market-info span { font-size: 0.8rem; color: #666; margin-right: 10px; }
 /* REVAMPED PITCH CARD */
 .pitch-slot.filled {
-    /* Glass Effect: Blur the whole card background */
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    /* Pro Glass: Subtle gradient + crisp border */
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Softer, deeper shadow */
     
-    /* Layout: Remove padding so content hits the edges (Flush Bottom) */
-    padding: 0;
-    justify-content: flex-start; 
-    overflow: hidden; /* Clips the bottom bar corners */
+    padding: 0; position: relative; /* Relative needed for absolute price badge */
+    justify-content: flex-end; /* Anchors name/fixture to bottom */
+    overflow: hidden;
 }
 
 .slot-price {
-    background: transparent; color: var(--color-primary-blue);
-    font-size: 0.8rem; padding: 0;
-    font-weight: 900; 
-    margin-top: 5px; /* Add space since padding is gone */
-    position: relative; z-index: 10; 
-    text-shadow: 0 1px 1px rgba(255,255,255,0.8);
+    /* UX FIX: Floating Pill Badge (Top Right) -> Clears visual clutter */
+    position: absolute; top: 4px; right: 4px;
+    background: var(--color-accent-yellow); color: var(--color-primary-blue);
+    font-size: 0.65rem; padding: 2px 6px; border-radius: 12px;
+    font-weight: 800; z-index: 10;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    margin: 0; /* Reset margins */
 }
 
 .slot-kit { 
-    width: 68px; height: 68px; /* Slightly Bigger Jersey */
-    object-fit: contain; margin: 0; 
+    width: 64px; height: 64px; /* Optimized size */
+    object-fit: contain; 
+    margin-bottom: -4px; /* Tuck slightly behind name for depth */
     position: relative; z-index: 1; 
-    flex-shrink: 0; 
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); /* 3D Pop Effect */
 } 
 
 .slot-name {
-    font-size: 0.75rem; font-weight: 700; color: #1a1a1a;
-    white-space: nowrap; overflow: hidden; max-width: 100%;
-    background: rgba(255,255,255,0.7); width: 100%;
-    margin-top: -12px; position: relative; z-index: 2;
+    font-size: 0.7rem; font-weight: 700; color: #111;
+    width: 100%; background: rgba(255,255,255,0.9);
+    padding: 2px 0; text-shadow: none;
+    white-space: nowrap; overflow: hidden;
+    position: relative; z-index: 2;
 }
 
 .slot-fix {
-    font-size: 0.7rem; width: 100%; padding: 2px 0;
-    color: white; font-weight: 700; text-transform: uppercase;
-    /* Alignment Magic: Pushes bar to the absolute bottom */
-    margin-top: auto; 
-    border-radius: 0; /* Parent overflow handles the corners */
+    font-size: 0.65rem; width: 100%; padding: 2px 0;
+    color: white; font-weight: 800; letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
-.slot-fix.home { background-color: rgba(46, 125, 50, 0.75); } /* Blur Green */
-.slot-fix.away { background-color: rgba(210, 16, 52, 0.75); } /* Blur Red */
-
+.slot-fix.home { background-color: #2E7D32; } /* Solid Green for readability */
+.slot-fix.away { background-color: #C62828; } /* Solid Red for readability */
 
 /* PLAYER ACTION MODAL */
 .action-kit { 
