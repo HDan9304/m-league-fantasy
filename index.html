@@ -217,11 +217,8 @@
         </div>
 
         <div class="selection-footer">
-            <div style="display:flex; gap:10px; width:100%; max-width: 600px; margin: 0 auto;">
-                <button id="autoPickBtn" class="btn-primary" style="background:var(--color-accent-yellow); color:var(--color-primary-blue); flex:1;">Auto Pick</button>
-                <button id="resetBtn" class="btn-danger" style="flex:1; border-radius:8px; margin:0;">Reset</button>
-                <button id="confirmSquadBtn" class="btn-primary" style="flex:2; margin:0;" disabled>Confirm</button>
-            </div>
+            <div class="counter-box">Selected: <span id="squadCount">0</span>/15</div>
+            <button id="confirmSquadBtn" class="btn-primary" style="width: auto; margin: 0;" disabled>Confirm Squad</button>
         </div>
 
     <script type="module" src="script.js"></script>
