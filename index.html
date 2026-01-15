@@ -121,10 +121,29 @@
     </div>
 
     <div id="selection-screen" class="selection-modal hidden">
-        <div class="selection-header">
-            <h3>Squad Selection</h3>
-            <small>Season 2026</small>
-        </div>
+        <div class="selection-sidebar">
+        <div class="sidebar-logo">M-League</div>
+        <button class="sidebar-nav active">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <span>My Squad</span>
+        </button>
+        <div style="flex:1"></div> 
+        <button id="selLogoutBtn" class="sidebar-nav logout">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <span>Log Out</span>
+        </button>
+    </div>
+
+        <div class="selection-main-wrapper">
+            <div class="selection-header">
+                <div style="display:flex; align-items:center; gap:15px;">
+                    <button id="sidebarToggle" class="btn-burger">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <h3>Squad Selection</h3>
+                </div>
+                <small>Season 2026</small>
+            </div>
         
         <div class="selection-rules">
             <h4 style="display:flex; align-items:center; gap:8px;">

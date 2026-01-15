@@ -311,6 +311,12 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
 });
 
 // --- SQUAD SELECTION LOGIC ---
+
+// Sidebar Toggle Logic
+document.getElementById('sidebarToggle').addEventListener('click', () => {
+    document.querySelector('.selection-sidebar').classList.toggle('open');
+});
+
 function renderSelectionScreen(data) {
     selectionScreen.classList.remove('hidden');
     document.body.style.background = '#F0F2F5';
@@ -400,6 +406,14 @@ function updateFooterStats() {
     btn.disabled = !isValid;
     btn.style.opacity = isValid ? "1" : "0.5";
 }
+
+// Sidebar Logout Logic
+document.getElementById('selLogoutBtn').addEventListener('click', () => {
+    const doLogout = confirm("Log out and return to login screen?");
+    if (doLogout) {
+        signOut(auth).then(() => location.reload());
+    }
+});
 
 // Confirm Button Logic
 document.getElementById('confirmSquadBtn').addEventListener('click', async () => {
