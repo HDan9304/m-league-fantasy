@@ -356,22 +356,24 @@ button:disabled {
 }
 
 .slot-price {
-    /* UX FIX: Floating Pill Badge (Top Right) -> Clears visual clutter */
-    position: absolute; top: 4px; right: 4px;
+    /* UX FIX: Centered Pill Badge */
+    position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
     background: var(--color-accent-yellow); color: var(--color-primary-blue);
-    font-size: 0.65rem; padding: 2px 6px; border-radius: 12px;
+    font-size: 0.65rem; padding: 2px 8px; border-radius: 12px;
     font-weight: 800; z-index: 10;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    margin: 0; /* Reset margins */
+    margin: 0;
+    white-space: nowrap; /* Ensures price doesn't wrap on small screens */
 }
 
 .slot-kit { 
-    width: 64px; height: 64px; /* Optimized size */
+    width: 60px; height: 60px; /* Slightly adjusted for better fit */
     object-fit: contain; 
-    margin-bottom: -4px; /* Tuck slightly behind name for depth */
+    margin-top: 18px; /* Pushes kit down to clear the price badge */
+    margin-bottom: -2px; 
     position: relative; z-index: 1; 
-    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); /* 3D Pop Effect */
-} 
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4));
+}
 
 .slot-name {
     font-size: 0.7rem; font-weight: 700; color: #111;
