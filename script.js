@@ -242,7 +242,7 @@ function showDashboard(data) {
     if (!data.squad || data.squad.length === 0) {
         // No squad? Show Selection Screen
         authScreen.classList.add('hidden');
-        renderSelectionScreen();
+        renderSelectionScreen(data); // Pass User Data
     } else {
         // Has squad? Show Dashboard
         authScreen.classList.add('hidden');
@@ -297,10 +297,16 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
 });
 
 // --- SQUAD SELECTION LOGIC ---
-function renderSelectionScreen() {
+function renderSelectionScreen(data) {
     selectionScreen.classList.remove('hidden');
     document.body.style.background = '#F0F2F5';
     
+    // Inject Manager Identity
+    if (data) {
+        document.getElementById('selManager').innerText = data.manager_name || "Manager";
+        document.getElementById('selTeam').innerText = data.team_name || "My Team";
+    }
+
     // Update Deadline Text
     if (GW_INFO.deadline) {
         document.getElementById('gw-deadline').innerText = `GW${GW_INFO.id} Deadline: ${GW_INFO.deadline}`;
@@ -376,16 +382,27 @@ function togglePlayer(id, cardElement) {
 function updateFooterStats() {
     const squad = Array.from(selectedSquadIds).map(sid => M_LEAGUE_PLAYERS.find(p => p.id === sid));
     const count = squad.length;
-    const cost = squad.reduce((sum, p) => sum + p.price, 0).toFixed(1);
+    const cost = squad.reduce((sum, p) => sum + p.price, 0);
+    const balance = (100 - cost).toFixed(1);
     
-    // Dynamic Footer Text
-    const counterBox = document.querySelector('.counter-box');
-    counterBox.innerHTML = `Selected: <b>${count}</b>/15 &nbsp;|&nbsp; Cost: <b>RM ${cost}M</b> / 100M`;
+    // Update HUD (Top Card)
+    document.getElementById('selCount').innerText = `${count}/15`;
+    const bankEl = document.getElementById('selBank');
+    bankEl.innerText = `RM ${balance}M`;
+    
+    // Visual Feedback for Low Balance
+    if (balance < 0) bankEl.style.color = "#D21034"; // Red if negative
+    else bankEl.style.color = "#0E1E5B";
+
+    // Update Footer (Bottom Bar)
+    document.querySelector('.counter-box').innerHTML = `Selected: <b>${count}</b>/15`;
     
     // Validate Complete Squad
     const btn = document.getElementById('confirmSquadBtn');
-    btn.disabled = (count !== 15);
-    btn.style.opacity = (count === 15) ? "1" : "0.5";
+    const isValid = count === 15 && cost <= 100;
+    
+    btn.disabled = !isValid;
+    btn.style.opacity = isValid ? "1" : "0.5";
 }
 
 // Confirm Button Logic

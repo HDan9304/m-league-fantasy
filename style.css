@@ -212,8 +212,17 @@ button:disabled {
     background: #FFF3E0; color: #E65100;
     margin: 0 15px 15px 15px; padding: 10px 15px;
     border-radius: 6px; font-size: 0.9rem; font-weight: 700;
-    border: 1px solid #FFCC80; display: flex; align-items: center;
+    .deadline-banner::before { content: "⏳"; margin-right: 10px; font-size: 1.1rem; }
+
+/* Stats HUD Card */
+.selection-stats-card {
+    background: white; margin: 0 15px 15px 15px; border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden;
 }
-.deadline-banner::before { content: "⏳"; margin-right: 10px; font-size: 1.1rem; }
-
-
+.stats-row { display: flex; justify-content: space-between; padding: 12px 15px; }
+.stats-row.border-bottom { border-bottom: 1px solid #eee; background: #fafafa; }
+.stat-item { display: flex; flex-direction: column; }
+.stat-item.text-right { text-align: right; }
+.stat-item small { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: 600; margin-bottom: 3px; }
+.stat-item span { font-size: 0.9rem; font-weight: 600; color: #333; }
+.stat-item strong { font-size: 1.1rem; color: var(--color-primary-blue); }
