@@ -29,30 +29,24 @@ const forgotBtn = document.getElementById('forgotBtn');
 // TRAFFIC COP: Prevent listener from overwriting register data
 let isRegistering = false; 
 
-// MOCK DATA: Malaysian League Players
-const M_LEAGUE_PLAYERS = [
-    { id: 1, name: "Syihan Hazmi", pos: "GK", team: "JDT", price: 6.0 },
-    { id: 2, name: "Kalamullah Al-Hafiz", pos: "GK", team: "KDA", price: 5.0 },
-    { id: 3, name: "Samuel Somerville", pos: "GK", team: "SEL", price: 4.5 },
-    { id: 4, name: "Matthew Davies", pos: "DEF", team: "JDT", price: 6.5 },
-    { id: 5, name: "La'Vere Corbin-Ong", pos: "DEF", team: "JDT", price: 6.5 },
-    { id: 6, name: "Sharul Nazeem", pos: "DEF", team: "SEL", price: 5.5 },
-    { id: 7, name: "Azam Azmi", pos: "DEF", team: "TRG", price: 5.0 },
-    { id: 8, name: "Dominic Tan", pos: "DEF", team: "SAB", price: 5.0 },
-    { id: 9, name: "Khuzaimi Piee", pos: "DEF", team: "SEL", price: 4.5 },
-    { id: 10, name: "Arif Aiman", pos: "MID", team: "JDT", price: 9.0 },
-    { id: 11, name: "Faisal Halim", pos: "MID", team: "SEL", price: 8.5 },
-    { id: 12, name: "Brendan Gan", pos: "MID", team: "KL", price: 6.5 },
-    { id: 13, name: "Safawi Rasid", pos: "MID", team: "TRG", price: 7.0 },
-    { id: 14, name: "Hong Wan", pos: "MID", team: "JDT", price: 6.0 },
-    { id: 15, name: "Mukhairi Ajmal", pos: "MID", team: "SEL", price: 5.5 },
-    { id: 16, name: "Bergson da Silva", pos: "FWD", team: "JDT", price: 10.0 },
-    { id: 17, name: "Heberty", pos: "FWD", team: "JDT", price: 9.5 },
-    { id: 18, name: "Darren Lok", pos: "FWD", team: "SAB", price: 7.5 },
-    { id: 19, name: "Paulo Josue", pos: "FWD", team: "KL", price: 8.0 },
-    { id: 20, name: "Ifedayo Olusegun", pos: "FWD", team: "KDA", price: 8.0 }
-];
+// DATA STATE (Fetched from JSON)
+let M_LEAGUE_PLAYERS = []; 
+let GW_INFO = {};
 let selectedSquadIds = new Set();
+
+// INITIALIZATION: Fetch Data
+async function initGameData() {
+    try {
+        const response = await fetch('./data.json');
+        const data = await response.json();
+        M_LEAGUE_PLAYERS = data.players;
+        GW_INFO = data.gameweek;
+        console.log("Data Loaded:", M_LEAGUE_PLAYERS.length + " players");
+    } catch (err) {
+        showToast("System Error: Could not load player data.", "error");
+    }
+}
+initGameData(); // Run immediately
 const selectionScreen = document.getElementById('selection-screen');
 
 // --- 3. AUTH LOGIC ---
@@ -307,6 +301,11 @@ function renderSelectionScreen() {
     selectionScreen.classList.remove('hidden');
     document.body.style.background = '#F0F2F5';
     
+    // Update Deadline Text
+    if (GW_INFO.deadline) {
+        document.getElementById('gw-deadline').innerText = `GW${GW_INFO.id} Deadline: ${GW_INFO.deadline}`;
+    }
+
     const container = document.getElementById('players-container');
     container.innerHTML = '';
 

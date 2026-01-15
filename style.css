@@ -207,3 +207,13 @@ button:disabled {
 .selection-rules li { font-size: 0.85rem; color: #555; display: flex; align-items: center; }
 .selection-rules li::before { content: "•"; color: var(--color-primary-blue); margin-right: 8px; font-weight: bold; }
 
+/* Deadline Banner */
+.deadline-banner {
+    background: #FFF3E0; color: #E65100;
+    margin: 0 15px 15px 15px; padding: 10px 15px;
+    border-radius: 6px; font-size: 0.9rem; font-weight: 700;
+    border: 1px solid #FFCC80; display: flex; align-items: center;
+}
+.deadline-banner::before { content: "⏳"; margin-right: 10px; font-size: 1.1rem; }
+
+
