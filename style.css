@@ -344,23 +344,29 @@ button:disabled {
 .market-info span { font-size: 0.8rem; color: #666; margin-right: 10px; }
 /* REVAMPED PITCH CARD */
 .pitch-slot.filled {
-    background: linear-gradient(135deg, #ffffff 0%, #f0f2f5 100%);
-    border: 1px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    padding: 2px; 
-    /* CRITICAL FIX: 'center' forces items to group inside the 105px box */
-    justify-content: center; 
+    /* Glass Effect: Blur the whole card background */
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    
+    /* Layout: Remove padding so content hits the edges (Flush Bottom) */
+    padding: 0;
+    justify-content: flex-start; 
+    overflow: hidden; /* Clips the bottom bar corners */
 }
 
 .slot-price {
-    background: transparent; color: var(--color-primary-blue); /* No Box, Clean Text */
-    font-size: 0.8rem; padding: 2px 0; 
-    font-weight: 900; margin-top: -4px; 
+    background: transparent; color: var(--color-primary-blue);
+    font-size: 0.8rem; padding: 0;
+    font-weight: 900; 
+    margin-top: 5px; /* Add space since padding is gone */
     position: relative; z-index: 10; 
     text-shadow: 0 1px 1px rgba(255,255,255,0.8);
 }
 
 .slot-kit { 
-    width: 60px; height: 60px; 
+    width: 68px; height: 68px; /* Slightly Bigger Jersey */
     object-fit: contain; margin: 0; 
     position: relative; z-index: 1; 
     flex-shrink: 0; 
@@ -369,18 +375,16 @@ button:disabled {
 .slot-name {
     font-size: 0.75rem; font-weight: 700; color: #1a1a1a;
     white-space: nowrap; overflow: hidden; max-width: 100%;
-    /* Glass Effect: Blur + Transparency */
-    background: rgba(255,255,255,0.55); width: 100%;
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    margin-top: -15px; position: relative; z-index: 2;
+    background: rgba(255,255,255,0.7); width: 100%;
+    margin-top: -12px; position: relative; z-index: 2;
 }
 
 .slot-fix {
     font-size: 0.7rem; width: 100%; padding: 2px 0;
     color: white; font-weight: 700; text-transform: uppercase;
-    /* Radius Match: 6px to match card corners perfectly */
-    border-radius: 0 0 6px 6px;
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    /* Alignment Magic: Pushes bar to the absolute bottom */
+    margin-top: auto; 
+    border-radius: 0; /* Parent overflow handles the corners */
 }
 .slot-fix.home { background-color: rgba(46, 125, 50, 0.75); } /* Blur Green */
 .slot-fix.away { background-color: rgba(210, 16, 52, 0.75); } /* Blur Red */
