@@ -430,17 +430,18 @@ document.getElementById('confirmSquadBtn').addEventListener('click', async () =>
 // --- MARKET & PITCH LOGIC ---
 const marketModal = document.getElementById('market-modal');
 const marketList = document.getElementById('market-list');
+const actionModal = document.getElementById('action-modal');
+let activePlayerObj = null; // Track who we are viewing
 
-document.getElementById('closeMarketBtn').addEventListener('click', () => {
-    marketModal.classList.add('hidden');
-});
+document.getElementById('closeMarketBtn').addEventListener('click', () => marketModal.classList.add('hidden'));
+document.getElementById('closeActionBtn').addEventListener('click', () => actionModal.classList.add('hidden'));
 
+// 1. OPEN MARKET (For Empty Slots)
 function openMarket(position) {
     marketModal.classList.remove('hidden');
     document.getElementById('marketTitle').innerText = `Select ${position}`;
     marketList.innerHTML = '';
 
-    // Filter Players by Position
     const candidates = M_LEAGUE_PLAYERS.filter(p => p.pos === position);
 
     candidates.forEach(player => {
@@ -462,19 +463,43 @@ function openMarket(position) {
     });
 }
 
-// Global scope function for HTML onclick
-window.selectPlayerFromMarket = (id) => {
-    // 1. Trigger Toggle (Pass null for cardElement since we are in a list)
-    const player = M_LEAGUE_PLAYERS.find(p => p.id === id);
+// 2. OPEN ACTION MODAL (For Filled Slots)
+function openPlayerActionModal(player) {
+    activePlayerObj = player;
+    actionModal.classList.remove('hidden');
     
-    // Custom check since we don't have cardElement for class toggling
+    // Populate Modal
+    document.getElementById('actionName').innerText = player.name;
+    document.getElementById('actionInfo').innerText = `${player.pos} • ${player.team} • RM ${player.price}M`;
+    document.getElementById('actionKit').src = TEAM_KITS[player.team] || 'assets/kits/default.png';
+}
+
+// 3. REMOVE PLAYER
+document.getElementById('btnRemove').addEventListener('click', () => {
+    if(!activePlayerObj) return;
+    selectedSquadIds.delete(activePlayerObj.id);
+    updateFooterStats();
+    updatePitchView();
+    actionModal.classList.add('hidden');
+    showToast("Player removed.", "success");
+});
+
+// 4. REPLACE PLAYER (Remove + Open Market)
+document.getElementById('btnReplace').addEventListener('click', () => {
+     if(!activePlayerObj) return;
+     const pos = activePlayerObj.pos;
+     selectedSquadIds.delete(activePlayerObj.id);
+     updateFooterStats();
+     
+     actionModal.classList.add('hidden');
+     openMarket(pos); // Immediate Swap
+});
+
+window.selectPlayerFromMarket = (id) => {
+    const player = M_LEAGUE_PLAYERS.find(p => p.id === id);
     if (!selectedSquadIds.has(id)) {
-        // Reuse toggle logic, but we need to handle the UI update manually here
-        // Simulating the togglePlayer checks:
         const dummyCard = document.createElement('div'); 
         togglePlayer(id, dummyCard);
-        
-        // If successful (added to set), close modal
         if (selectedSquadIds.has(id)) {
             marketModal.classList.add('hidden');
         }
@@ -484,18 +509,14 @@ window.selectPlayerFromMarket = (id) => {
 // HELPER: Find Next Opponent
 function getNextOpponent(myTeam) {
     const match = FIXTURES.find(m => m.home === myTeam || m.away === myTeam);
-    if (!match) return "-"; // No game this week
-    
-    // Standard Football Notation: (H) for Home, (A) for Away
+    if (!match) return "-"; 
     if (match.home === myTeam) return match.away + " (H)"; 
     return match.home + " (A)"; 
 }
 
 function updatePitchView() {
-    // 1. Get Selected Players Objects
     const squad = Array.from(selectedSquadIds).map(sid => M_LEAGUE_PLAYERS.find(p => p.id === sid));
     
-    // 2. Define Structure
     const structure = {
         'GK': { count: 2, el: document.getElementById('row-GK') },
         'DEF': { count: 5, el: document.getElementById('row-DEF') },
@@ -503,24 +524,21 @@ function updatePitchView() {
         'FWD': { count: 3, el: document.getElementById('row-FWD') }
     };
 
-    // 3. Render Each Row
     Object.keys(structure).forEach(pos => {
         const rowData = structure[pos];
         const playersInPos = squad.filter(p => p.pos === pos);
-        rowData.el.innerHTML = ''; // Clear Row
+        rowData.el.innerHTML = '';
 
-        // Create Slots (Filled + Empty)
         for (let i = 0; i < rowData.count; i++) {
             const slot = document.createElement('div');
             const player = playersInPos[i];
             
-            // Make Slot Clickable -> Open Market
-            slot.onclick = () => openMarket(pos);
-            slot.style.cursor = "pointer";
-
+            // Logic Change: Different Click Actions
             if (player) {
-                // FILLED SLOT (Revamped)
+                // FILLED -> Open Profile
+                slot.onclick = () => openPlayerActionModal(player);
                 slot.className = 'pitch-slot filled';
+                slot.style.cursor = "pointer";
                 slot.innerHTML = `
                     <div class="slot-price">RM ${player.price}M</div>
                     <img src="${TEAM_KITS[player.team] || 'assets/kits/default.png'}" class="slot-kit" loading="lazy" width="50" height="50" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1865/1865147.png'">
@@ -530,8 +548,10 @@ function updatePitchView() {
                     </div>
                 `;
             } else {
-                // EMPTY GHOST SLOT
+                // EMPTY -> Open Market
+                slot.onclick = () => openMarket(pos);
                 slot.className = 'pitch-slot';
+                slot.style.cursor = "pointer";
                 slot.innerHTML = `<span>${pos}</span><span style="font-size:1.2rem;">+</span>`;
             }
             rowData.el.appendChild(slot);

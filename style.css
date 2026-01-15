@@ -373,3 +373,13 @@ button:disabled {
 }
 .slot-fix.home { background-color: #2E7D32; } /* Green for Home */
 .slot-fix.away { background-color: #D21034; } /* Red for Away */
+
+/* PLAYER ACTION MODAL */
+.action-kit { 
+    width: 85px; height: 85px; object-fit: contain; 
+    margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); 
+}
+.btn-danger { 
+    background: #FFEBEE; color: #D21034; border: none; 
+    font-weight: 800; text-transform: uppercase; font-size: 0.9rem;
+}
