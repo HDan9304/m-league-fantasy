@@ -194,6 +194,7 @@ button:disabled {
     background: white; padding: 15px; border-top: 1px solid #ddd;
     display: flex; justify-content: space-between; align-items: center;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    z-index: 5000; /* Force footer above pitch lines */
 }
 .counter-box { font-weight: bold; color: var(--color-primary-blue); }
 
@@ -205,7 +206,8 @@ button:disabled {
 .selection-rules h4 { color: var(--color-primary-blue); margin-bottom: 8px; font-size: 0.95rem; }
 .selection-rules ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 5px; }
 .selection-rules li { font-size: 0.85rem; color: #555; display: flex; align-items: center; }
-.selection-rules li::before { content: "•"; color: var(--color-primary-blue); margin-right: 8px; font-weight: bold; }
+/* Use \2022 for Bullet to prevent encoding errors */
+.selection-rules li::before { content: "\2022"; color: var(--color-primary-blue); margin-right: 8px; font-weight: bold; }
 
 /* Deadline Banner */
 .deadline-banner {
@@ -213,7 +215,8 @@ button:disabled {
     margin: 0 15px 15px 15px; padding: 10px 15px;
     border-radius: 6px; font-size: 0.9rem; font-weight: 700;
 }
-.deadline-banner::before { content: "⏳"; margin-right: 10px; font-size: 1.1rem; }
+/* Use \23F3 for Hourglass to prevent encoding errors */
+.deadline-banner::before { content: "\23F3"; margin-right: 10px; font-size: 1.1rem; }
 
 /* Stats HUD Card */
 .selection-stats-card {
@@ -311,3 +314,54 @@ button:disabled {
     position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 30%; height: 6%; border: 2px solid rgba(255,255,255,0.4); border-bottom: none;
 }
+
+/* MARKET MODAL */
+.market-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 4000;
+    display: flex; justify-content: center; align-items: flex-end; /* Bottom sheet on mobile */
+}
+.market-content {
+    width: 100%; max-width: 500px; height: 80%;
+    background: white; border-radius: 15px 15px 0 0;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+}
+.market-header {
+    padding: 15px; border-bottom: 1px solid #eee; background: #fff;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.market-list { flex: 1; overflow-y: auto; padding: 10px; background: #f9f9f9; }
+
+/* Market Row Item */
+.market-row {
+    display: flex; justify-content: space-between; align-items: center;
+    background: white; padding: 12px; margin-bottom: 8px;
+    border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.market-info h4 { font-size: 0.95rem; color: var(--color-primary-blue); margin-bottom: 2px; }
+.market-info span { font-size: 0.8rem; color: #666; margin-right: 10px; }
+/* REVAMPED PITCH CARD */
+.pitch-slot.filled {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f2f5 100%);
+    border: 1px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    padding: 2px; justify-content: space-between;
+}
+.slot-price {
+    background: var(--color-primary-blue); color: var(--color-accent-yellow);
+    font-size: 0.6rem; padding: 1px 4px; border-radius: 4px;
+    font-weight: 800; margin-top: -5px; z-index: 2;
+}
+.slot-kit { width: 32px; height: 32px; object-fit: contain; margin: -2px 0; }
+.slot-name {
+    font-size: 0.65rem; font-weight: 700; color: #1a1a1a;
+    white-space: nowrap; overflow: hidden; max-width: 100%;
+    background: rgba(255,255,255,0.8); width: 100%;
+}
+.slot-fix {
+    font-size: 0.55rem; width: 100%; padding: 1px 0;
+    color: white; font-weight: 700; text-transform: uppercase;
+    border-radius: 0 0 4px 4px;
+}
+.slot-fix.home { background-color: #2E7D32; } /* Green for Home */
+.slot-fix.away { background-color: #D21034; } /* Red for Away */

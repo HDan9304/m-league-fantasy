@@ -29,23 +29,35 @@ const forgotBtn = document.getElementById('forgotBtn');
 // TRAFFIC COP: Prevent listener from overwriting register data
 let isRegistering = false; 
 
-// DATA STATE (Fetched from JSON)
+// DATA STATE
 let M_LEAGUE_PLAYERS = []; 
 let GW_INFO = {};
+let FIXTURES = []; 
+let TEAM_KITS = {}; // New State for Kits
 let selectedSquadIds = new Set();
 
-// INITIALIZATION: Fetch Data
+// INITIALIZATION: Fetch Data, Fixtures & Kits Parallelly
 async function initGameData() {
     try {
-        const response = await fetch('./data.json');
-        const data = await response.json();
+        const [dataRes, fixRes, kitsRes] = await Promise.all([
+            fetch('./data.json'),
+            fetch('./fixtures.json'),
+            fetch('./kits.json')
+        ]);
+
+        const data = await dataRes.json();
+        FIXTURES = await fixRes.json();
+        TEAM_KITS = await kitsRes.json();
+
         M_LEAGUE_PLAYERS = data.players;
         GW_INFO = data.gameweek;
-        console.log("Data Loaded:", M_LEAGUE_PLAYERS.length + " players");
+        console.log(`Loaded: ${M_LEAGUE_PLAYERS.length} Players, ${FIXTURES.length} Fixtures, Kits Ready`);
     } catch (err) {
-        showToast("System Error: Could not load player data.", "error");
+        console.error(err);
+        showToast("System Error: Could not load game data.", "error");
     }
 }
+
 const gameDataReady = initGameData(); // Run & Capture Promise to wait for later
 const selectionScreen = document.getElementById('selection-screen');
 
@@ -314,18 +326,9 @@ function renderSelectionScreen(data) {
         document.getElementById('gw-deadline').innerText = `GW${GW_INFO.id} Deadline: ${GW_INFO.deadline}`;
     }
 
-    const container = document.getElementById('players-container');
-    container.innerHTML = '';
-
-    // DISABLED: Player Selection List (Pending Feature)
-    container.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: #888;">
-            <p>Player Market Opening Soon...</p>
-            <p>Please use the <b>View Pitch</b> button to visualize formation.</p>
-        </div>
-    `;
+    // Initialize Pitch immediately (No more list view)
+    updatePitchView();
 }
-
 
 function togglePlayer(id, cardElement) {
     // 1. Identify Player & Current Squad
@@ -424,17 +427,68 @@ document.getElementById('confirmSquadBtn').addEventListener('click', async () =>
     }
 });
 
-// --- PITCH MODAL LOGIC ---
-const pitchModal = document.getElementById('pitch-modal');
+// --- MARKET & PITCH LOGIC ---
+const marketModal = document.getElementById('market-modal');
+const marketList = document.getElementById('market-list');
 
-document.getElementById('viewPitchBtn').addEventListener('click', () => {
-    pitchModal.classList.remove('hidden');
-    updatePitchView(); // Ensure fresh data
+document.getElementById('closeMarketBtn').addEventListener('click', () => {
+    marketModal.classList.add('hidden');
 });
 
-document.getElementById('closePitchBtn').addEventListener('click', () => {
-    pitchModal.classList.add('hidden');
-});
+function openMarket(position) {
+    marketModal.classList.remove('hidden');
+    document.getElementById('marketTitle').innerText = `Select ${position}`;
+    marketList.innerHTML = '';
+
+    // Filter Players by Position
+    const candidates = M_LEAGUE_PLAYERS.filter(p => p.pos === position);
+
+    candidates.forEach(player => {
+        const isSelected = selectedSquadIds.has(player.id);
+        const row = document.createElement('div');
+        row.className = 'market-row';
+        row.innerHTML = `
+            <div class="market-info">
+                <h4>${player.name}</h4>
+                <span>${player.team}</span>
+                <span class="market-price">RM ${player.price}M</span>
+            </div>
+            ${isSelected 
+                ? `<button class="btn-select" style="background:#ccc" disabled>Selected</button>` 
+                : `<button class="btn-select" onclick="selectPlayerFromMarket(${player.id})">Add</button>`
+            }
+        `;
+        marketList.appendChild(row);
+    });
+}
+
+// Global scope function for HTML onclick
+window.selectPlayerFromMarket = (id) => {
+    // 1. Trigger Toggle (Pass null for cardElement since we are in a list)
+    const player = M_LEAGUE_PLAYERS.find(p => p.id === id);
+    
+    // Custom check since we don't have cardElement for class toggling
+    if (!selectedSquadIds.has(id)) {
+        // Reuse toggle logic, but we need to handle the UI update manually here
+        // Simulating the togglePlayer checks:
+        const dummyCard = document.createElement('div'); 
+        togglePlayer(id, dummyCard);
+        
+        // If successful (added to set), close modal
+        if (selectedSquadIds.has(id)) {
+            marketModal.classList.add('hidden');
+        }
+    }
+};
+
+// HELPER: Find Next Opponent
+function getNextOpponent(myTeam) {
+    const match = FIXTURES.find(m => m.home === myTeam || m.away === myTeam);
+    if (!match) return "-"; // No game this week
+    
+    if (match.home === myTeam) return "v " + match.away; // Home Game
+    return "@ " + match.home; // Away Game
+}
 
 function updatePitchView() {
     // 1. Get Selected Players Objects
@@ -457,20 +511,27 @@ function updatePitchView() {
         // Create Slots (Filled + Empty)
         for (let i = 0; i < rowData.count; i++) {
             const slot = document.createElement('div');
-            const player = playersInPos[i]; // Get player if exists
+            const player = playersInPos[i];
             
+            // Make Slot Clickable -> Open Market
+            slot.onclick = () => openMarket(pos);
+            slot.style.cursor = "pointer";
+
             if (player) {
-                // FILLED SLOT
+                // FILLED SLOT (Revamped)
                 slot.className = 'pitch-slot filled';
                 slot.innerHTML = `
-                    <div style="font-size:1rem;"></div>
-                    <strong>${player.name.split(' ').pop()}</strong>
-                    <span>${player.team}</span>
+                    <div class="slot-price">RM ${player.price}</div>
+                    <img src="${TEAM_KITS[player.team] || 'assets/kits/default.png'}" class="slot-kit" loading="lazy" width="32" height="32" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1865/1865147.png'">
+                    <div class="slot-name">${player.name.split(' ').pop()}</div>
+                    <div class="slot-fix ${getNextOpponent(player.team).includes('v') ? 'home' : 'away'}">
+                        ${getNextOpponent(player.team)}
+                    </div>
                 `;
             } else {
                 // EMPTY GHOST SLOT
                 slot.className = 'pitch-slot';
-                slot.innerHTML = `<span>${pos}</span>`;
+                slot.innerHTML = `<span>${pos}</span><span style="font-size:1.2rem;">+</span>`;
             }
             rowData.el.appendChild(slot);
         }

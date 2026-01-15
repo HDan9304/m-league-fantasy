@@ -127,11 +127,14 @@
         </div>
         
         <div class="selection-rules">
-            <h4>📋 Squad Rules</h4>
+            <h4 style="display:flex; align-items:center; gap:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Squad Rules
+            </h4>
             <ul>
                 <li><strong>Budget:</strong> Max RM 100M</li>
                 <li><strong>Team Limit:</strong> Max 3 Players per Club</li>
-                <li><strong>Structure:</strong> 2 GK • 5 DEF • 5 MID • 3 FWD</li>
+                <li><strong>Structure:</strong> 2 GK &bull; 5 DEF &bull; 5 MID &bull; 3 FWD</li>
             </ul>
         </div>
 
@@ -162,40 +165,40 @@
             </div>
         </div>
 
-        <div id="players-container">
+        <div class="pitch-inline-container">
+            <div class="modal-pitch" style="border-radius: 8px; min-height: 550px; margin-bottom: 80px;">
+                <div class="pitch-lines">
+                    <div class="box-penalty-top"></div>
+                    <div class="box-goal-top"></div>
+                    <div class="line-center"></div>
+                    <div class="box-penalty-bottom"></div>
+                    <div class="box-goal-bottom"></div>
+                </div>
 
+                <div class="pitch-row" id="row-GK"></div>
+                <div class="pitch-row" id="row-DEF"></div>
+                <div class="pitch-row" id="row-MID"></div>
+                <div class="pitch-row" id="row-FWD"></div>
             </div>
+        </div>
+
+        <div id="market-modal" class="market-overlay hidden">
+            <div class="market-content">
+                <div class="market-header">
+                    <h3 id="marketTitle">Select Player</h3>
+                    <button id="closeMarketBtn" style="background:none; border:none; cursor:pointer; color: #666;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div id="market-list" class="market-list">
+                    </div>
+            </div>
+        </div>
+
         <div class="selection-footer">
             <div class="counter-box">Selected: <span id="squadCount">0</span>/15</div>
             <button id="confirmSquadBtn" class="btn-primary" style="width: auto; margin: 0;" disabled>Confirm Squad</button>
         </div>
-
-        <button id="viewPitchBtn" class="fab-btn">⚽ View Pitch</button>
-
-        <div id="pitch-modal" class="pitch-overlay hidden">
-            <div class="pitch-content">
-                <div class="pitch-header">
-                    <h3>Squad Visualizer</h3>
-                    <button id="closePitchBtn">✕</button>
-                </div>
-                <div class="modal-pitch">
-                    <div class="pitch-lines">
-                        <div class="box-penalty-top"></div>
-                        <div class="box-goal-top"></div>
-                        <div class="line-center"></div>
-                        <div class="box-penalty-bottom"></div>
-                        <div class="box-goal-bottom"></div>
-                    </div>
-
-                    <div class="pitch-row" id="row-GK"></div>
-                    <div class="pitch-row" id="row-DEF"></div>
-                    <div class="pitch-row" id="row-MID"></div>
-                    <div class="pitch-row" id="row-FWD"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <script type="module" src="script.js"></script>
 </body>
