@@ -402,7 +402,55 @@ function updateFooterStats() {
     btn.style.opacity = isValid ? "1" : "0.5";
 }
 
-// Confirm Button Logic
+// --- NEW BUTTON ACTIONS ---
+
+// AUTO PICK LOGIC
+document.getElementById('autoPickBtn').addEventListener('click', () => {
+    const limits = { 'GK': 2, 'DEF': 5, 'MID': 5, 'FWD': 3 };
+    
+    // Attempt to fill every position
+    Object.keys(limits).forEach(pos => {
+        // 1. Check how many we still need
+        const currentSquad = Array.from(selectedSquadIds).map(id => M_LEAGUE_PLAYERS.find(p => p.id === id));
+        let count = currentSquad.filter(p => p.pos === pos).length;
+        
+        // 2. Loop until limit reached
+        while (count < limits[pos]) {
+            // Re-calculate live budget constraint
+            const squad = Array.from(selectedSquadIds).map(id => M_LEAGUE_PLAYERS.find(p => p.id === id));
+            const usedBudget = squad.reduce((sum, p) => sum + p.price, 0);
+            const remainingBudget = 100 - usedBudget;
+
+            // Filter Valid Candidates (Budget + Team Limit)
+            const candidates = M_LEAGUE_PLAYERS.filter(p => 
+                p.pos === pos && 
+                !selectedSquadIds.has(p.id) && 
+                p.price <= remainingBudget &&
+                squad.filter(s => s.team === p.team).length < 3
+            );
+
+            if (candidates.length === 0) break; // Stop if no valid players found
+
+            // Pick Random Player
+            const randomPlayer = candidates[Math.floor(Math.random() * candidates.length)];
+            selectedSquadIds.add(randomPlayer.id);
+            count++;
+        }
+    });
+
+    updateFooterStats();
+    updatePitchView();
+});
+
+// RESET LOGIC
+document.getElementById('resetBtn').addEventListener('click', () => {
+    if(confirm("Reset all selections?")) {
+        selectedSquadIds.clear();
+        updateFooterStats();
+        updatePitchView();
+    }
+});
+
 document.getElementById('confirmSquadBtn').addEventListener('click', async () => {
     const btn = document.getElementById('confirmSquadBtn');
     btn.innerText = "Saving...";
