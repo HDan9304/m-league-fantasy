@@ -130,3 +130,30 @@ input {
 .btn-secondary:hover {
     background: rgba(250, 204, 21, 0.1);
 }
+
+/* Ensure Google Button fills container */
+#googleBtnContainer {
+    width: 100%;
+    display: block;
+}
+
+#googleBtnContainer iframe {
+    width: 100% !important;
+    margin: 0 auto;
+}
+
+/* Desktop & Large Screen Optimization */
+@media (min-width: 768px) {
+    .login-wrapper {
+        max-width: 500px; /* Wider card for desktop balance */
+    }
+    
+    .login-card {
+        padding: 3rem; /* More breathing room on desktop */
+        border: 1px solid #334155; /* Subtle border for better card definition */
+    }
+
+    .brand h1 {
+        font-size: 3rem; /* Larger brand impact */
+    }
+}

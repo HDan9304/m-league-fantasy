@@ -7,7 +7,7 @@ window.onload = function () {
 
     google.accounts.id.renderButton(
         document.getElementById("googleBtnContainer"),
-        { theme: "filled_black", size: "large", width: "100%", shape: "pill", text: "signin_with" }
+        { theme: "filled_black", size: "large", shape: "pill", text: "signin_with" }
     );
 };
 
