@@ -80,7 +80,7 @@ input {
     background: var(--accent-color);
     color: #000;
     border: none;
-    border-radius: 8px;
+    border-radius: 100px;
     font-weight: bold;
     cursor: pointer;
     transition: opacity 0.2s;
@@ -121,7 +121,7 @@ input {
     background: transparent;
     color: var(--accent-color);
     border: 1px solid var(--accent-color);
-    border-radius: 8px;
+    border-radius: 100px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
