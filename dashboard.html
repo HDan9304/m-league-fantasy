@@ -19,30 +19,29 @@
                 <div class="card-header">
                     <div class="header-info">
                         <h2 id="displayTeamName">Loading Team...</h2>
-                        <p id="displayMgrName">Manager Name</p>
+                        <div class="mgr-gw-row">
+                            <p id="displayMgrName">Manager Name</p>
+                            <span class="gw-badge">GW 1</span>
+                        </div>
                     </div>
                     <div class="rank-pill">
-                        <span class="rank-label">Global Rank</span>
+                        <span class="rank-label">Rank</span>
                         <div class="rank-display">
                             <span class="rank-value">#--</span>
                             <span class="rank-trend material-symbols-outlined">trending_up</span>
                         </div>
                     </div>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-label">GW</span>
-                        <span class="stat-value">1</span>
-                    </div>
-                    <div class="stat-item highlight">
-                        <span class="stat-label">Points</span>
-                        <span class="stat-value" id="gwPoints">0</span>
-                    </div>
-                    <div class="stat-item">
+                <div class="stats-grid hero-layout">
+                    <div class="stat-item secondary">
                         <span class="stat-label">Average</span>
                         <span class="stat-value">34</span>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat-item highlight center-hero">
+                        <span class="stat-label">GW Points</span>
+                        <span class="stat-value" id="gwPoints">0</span>
+                    </div>
+                    <div class="stat-item secondary">
                         <span class="stat-label">Highest</span>
                         <span class="stat-value">82</span>
                     </div>
