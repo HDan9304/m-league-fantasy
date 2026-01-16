@@ -105,38 +105,43 @@ onAuthStateChanged(auth, async (user) => {
             }
         }
 
-        // --- Dynamic Deadline Logic (Firestore) ---
+        // --- Dynamic Deadline Logic (Improved Firestore Sync) ---
         let targetDeadline = 0;
         const timerEl = document.getElementById('countdownTimer');
         const gwEl = document.getElementById('deadlineGW');
 
-        // Listen for global league status changes
+        if (timerEl) timerEl.innerText = "SYNCING..."; // Provide feedback while loading
+
         onSnapshot(doc(db, "settings", "leagueStatus"), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                // Assumes 'deadline' is a Firestore Timestamp and 'gw' is a String
-                targetDeadline = data.deadline.toDate().getTime();
-                if (gwEl) gwEl.innerText = data.gw;
+                if (data.deadline) {
+                    // Automatically detects if deadline is a Timestamp object or a Date String
+                    targetDeadline = data.deadline.toDate ? data.deadline.toDate().getTime() : new Date(data.deadline).getTime();
+                }
+                if (gwEl && data.gw) gwEl.innerText = data.gw;
+                updateTimer(); // Trigger immediate update so it doesn't wait 1 second
             }
-        });
+        }, (err) => console.error("Deadline Sync Error:", err));
         
         const updateTimer = () => {
-            if (!targetDeadline) return;
+            if (!targetDeadline || isNaN(targetDeadline)) return;
             
             const now = new Date().getTime();
             const distance = targetDeadline - now;
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
             if (timerEl) {
                 if (distance < 0) {
                     timerEl.innerHTML = "DEADLINE PASSED";
-                } else {
-                    timerEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    return;
                 }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                timerEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
             }
         };
 
