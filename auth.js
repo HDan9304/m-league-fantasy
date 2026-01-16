@@ -104,6 +104,31 @@ onAuthStateChanged(auth, async (user) => {
                 mgrEl.innerText = userData.managerName;
             }
         }
+
+        // --- Live Deadline Countdown Logic ---
+        const deadlineDate = new Date("Jan 25, 2026 18:00:00").getTime(); // Set your next deadline here
+        const timerEl = document.getElementById('countdownTimer');
+        
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const distance = deadlineDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (timerEl) {
+                if (distance < 0) {
+                    timerEl.innerHTML = "DEADLINE PASSED";
+                } else {
+                    timerEl.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+        };
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
     }
 });
 

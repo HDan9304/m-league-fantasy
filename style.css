@@ -464,8 +464,52 @@ input {
     letter-spacing: 1px;
 }
 
+/* --- Game Week Deadline Card --- */
+.deadline-card {
+    margin-top: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+.deadline-info { display: flex; flex-direction: column; }
+
+.deadline-label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.deadline-gw {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-primary);
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.deadline-timer {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-color);
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+}
+
 /* Adapt sizes for smaller mobile screens - Maximized View */
 @media (max-width: 480px) {
+    .deadline-timer { font-size: 1.1rem; }
+    .deadline-card { padding: 15px; }
     .app-container {
         width: 100%;
         padding: 15px 12px;
