@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M-League Fantasy | Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-wrapper">
+        <header class="brand">
+            <h1>M-League <span>Fantasy</span></h1>
+            <p>Create Your Manager Profile</p>
+        </header>
+
+        <main class="login-card">
+            <form id="registerForm">
+                <div class="input-group">
+                    <label for="mgrName">Manager Name</label>
+                    <input type="text" id="mgrName" placeholder="e.g. Ali Abu" required>
+                </div>
+                <div class="input-group">
+                    <label for="teamName">Fantasy Team Name</label>
+                    <input type="text" id="teamName" placeholder="e.g. Harimau FC" required>
+                </div>
+                <div class="input-group">
+                    <label for="regEmail">Email Address</label>
+                    <input type="email" id="regEmail" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="btn-primary">Register Team</button>
+            </form>
+
+            <div class="card-footer">
+                <p>Already have a team?</p>
+                <button type="button" class="btn-secondary" onclick="window.location.href='index.html'">Back to Login</button>
+            </div>
+        </main>
+    </div>
+    <script src="auth.js"></script>
+</body>
+</html>

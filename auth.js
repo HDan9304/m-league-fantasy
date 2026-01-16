@@ -24,3 +24,34 @@ document.getElementById('emailLoginForm').addEventListener('submit', function(e)
     console.log("Email login attempt:", email);
     alert("Login link sent to: " + email);
 });
+
+// --- DATA RESTORATION LOGIC ---
+
+// Save Data (Registration)
+const registerForm = document.getElementById('registerForm');
+if (registerForm) {
+    registerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userData = {
+            managerName: document.getElementById('mgrName').value,
+            teamName: document.getElementById('teamName').value,
+            email: document.getElementById('regEmail').value
+        };
+        
+        // Restore/Save to LocalStorage
+        localStorage.setItem('mLeagueUser', JSON.stringify(userData));
+        alert("Account Created! Welcome to M-League Fantasy.");
+        window.location.href = 'index.html'; // Redirect to login
+    });
+}
+
+// Check for existing session on load
+function checkSession() {
+    const savedUser = localStorage.getItem('mLeagueUser');
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        console.log("Restored User Session:", user.teamName);
+        // In the future, redirect directly to Dashboard here
+    }
+}
+checkSession();
