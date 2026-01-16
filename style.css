@@ -328,17 +328,32 @@ input {
 }
 
 /* --- Compact Header Styles --- */
+.card-header {
+    display: flex;
+    justify-content: space-between; /* Fixes the "Too Long" pill error */
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.card-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-color); /* Restored Gold Team Name */
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+    letter-spacing: -0.5px;
+}
+
+.card-header p {
+    color: var(--text-primary); /* Keeps Manager Name vibrant white */
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
 .mgr-gw-row {
     display: flex;
     align-items: center;
     gap: 8px;
     margin-top: 2px;
-}
-
-.card-header p {
-    color: var(--text-primary); /* Restored to high-contrast white */
-    font-weight: 600;
-    font-size: 0.85rem;
 }
 
 .gw-badge {
@@ -354,10 +369,10 @@ input {
 .rank-pill {
     background: rgba(250, 204, 21, 0.1);
     border: 1px solid rgba(250, 204, 21, 0.2);
-    padding: 6px 10px;
-    border-radius: 12px;
+    padding: 8px 14px;
+    border-radius: 16px;
     text-align: center;
-    min-width: 70px;
+    flex-shrink: 0; /* Prevents badge from stretching horizontally */
 }
 
 .rank-display {
