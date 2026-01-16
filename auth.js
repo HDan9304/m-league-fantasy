@@ -9,7 +9,12 @@ window.onload = function () {
     const customBtn = document.getElementById('customGoogleBtn');
     if (customBtn) {
         customBtn.onclick = () => {
-            google.accounts.id.prompt(); // Triggers the One Tap/Login popup
+            google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    // Fallback to manual selection if One Tap is blocked
+                    google.accounts.id.renderButton(customBtn, { theme: "outline", size: "large" });
+                }
+            });
         };
     }
 };
