@@ -9,12 +9,18 @@ window.onload = function () {
     const customBtn = document.getElementById('customGoogleBtn');
     if (customBtn) {
         customBtn.onclick = () => {
-            google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    // Fallback to manual selection if One Tap is blocked
-                    google.accounts.id.renderButton(customBtn, { theme: "outline", size: "large" });
-                }
+            // This forces the standard Google Login selector to appear
+            // bypassing any "One Tap" suppression logic
+            const client = google.accounts.oauth2.initCodeClient({
+                client_id: '301677140666-eekdcu7mb474808h0jcvv6seha2gs7v8.apps.googleusercontent.com',
+                scope: 'openid email profile',
+                ux_mode: 'popup',
+                callback: (response) => {
+                    console.log("Google Auth Code:", response.code);
+                    // Handle the auth code here
+                },
             });
+            client.requestCode();
         };
     }
 };
