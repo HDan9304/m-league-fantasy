@@ -400,30 +400,52 @@ input {
     font-size: 0.9rem;
 }
 
-/* --- 3-Column Hero Stats Layout --- */
+/* --- Stat Hierarchy: Thin Labels / Bold Values --- */
+.stat-item {
+    display: flex;
+    flex-direction: column; /* Stacks Label on top of Number */
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 400; /* THIN FONT for labels */
+    letter-spacing: 0.8px;
+    margin-bottom: 4px; /* Space between label and number */
+}
+
+.stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800; /* BOLD FONT for numbers */
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+/* --- Balanced 3-Column Hero Layout --- */
 .stats-grid.hero-layout {
     display: grid;
-    grid-template-columns: 1fr 1.5fr 1fr; /* Centers and enlarges middle column */
-    gap: 15px;
-    align-items: flex-end; /* Aligns hero stat slightly higher */
+    grid-template-columns: 1fr 1.6fr 1fr; /* Centers and maximizes hero column */
+    gap: 10px;
+    align-items: center; /* Prevents text overlap by centering row contents */
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding-top: 25px;
 }
 
 .stat-item.secondary .stat-value {
-    font-size: 1.2rem;
-    color: var(--text-primary);
+    font-size: 1.4rem; /* Prominent secondary numbers */
 }
 
 .stat-item.highlight.center-hero .stat-value {
-    font-size: 2.8rem; /* Hero Point Size */
+    font-size: 3.2rem; /* BIGGEST SIZE: Hero point focus */
     color: var(--accent-color);
-    line-height: 1;
     text-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
 }
 
 .stat-item.center-hero .stat-label {
-    color: var(--text-primary);
+    color: var(--text-primary); /* Bold color for hero label */
     font-size: 0.65rem;
 }
 
@@ -451,5 +473,6 @@ input {
     .manager-card { padding: 22px 18px; }
     .card-header h2 { font-size: 1.4rem; }
     .stats-grid.hero-layout { grid-template-columns: 1fr 1.4fr 1fr; gap: 8px; }
-    .stat-item.highlight.center-hero .stat-value { font-size: 2.2rem; }
+    .stat-item.highlight.center-hero .stat-value { font-size: 2.5rem; }
+    .stat-item.secondary .stat-value { font-size: 1.2rem; }
 }
