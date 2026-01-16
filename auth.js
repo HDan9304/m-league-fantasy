@@ -1,71 +1,79 @@
-// Initialize Google Sign-In
-window.onload = function () {
-    google.accounts.id.initialize({
-        client_id: "301677140666-eekdcu7mb474808h0jcvv6seha2gs7v8.apps.googleusercontent.com",
-        callback: handleGoogleLogin
-    });
+// Firebase SDK Integration
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // Custom Button Click Handler
-    const customBtn = document.getElementById('customGoogleBtn');
-    if (customBtn) {
-        customBtn.onclick = () => {
-            // This forces the standard Google Login selector to appear
-            // bypassing any "One Tap" suppression logic
-            const client = google.accounts.oauth2.initCodeClient({
-                client_id: '301677140666-eekdcu7mb474808h0jcvv6seha2gs7v8.apps.googleusercontent.com',
-                scope: 'openid email profile',
-                ux_mode: 'popup',
-                callback: (response) => {
-                    console.log("Google Auth Code:", response.code);
-                    // Handle the auth code here
-                },
-            });
-            client.requestCode();
-        };
-    }
+// Your Firebase configuration (Updated with live project keys)
+const firebaseConfig = {
+  apiKey: "AIzaSyBvMqEEIU6B6TYxLCsf2tRGSbSe_PtYu80",
+  authDomain: "m-league-fantasy-7460c.firebaseapp.com",
+  projectId: "m-league-fantasy-7460c",
+  storageBucket: "m-league-fantasy-7460c.firebasestorage.app",
+  messagingSenderId: "16232427026",
+  appId: "1:16232427026:web:6c59e99bba1ddc7eeaf2cb"
 };
 
-// Handle Google Response
-function handleGoogleLogin(response) {
-    console.log("Google JWT Token:", response.credential);
-    // Future step: Send to backend
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// Google Sign-In with Firebase
+const customBtn = document.getElementById('customGoogleBtn');
+if (customBtn) {
+    customBtn.onclick = () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                console.log("Logged in:", result.user.displayName);
+                window.location.href = 'dashboard.html';
+            }).catch((error) => alert(error.message));
+    };
 }
 
-// Handle Email Form
-document.getElementById('emailLoginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    console.log("Email login attempt:", email);
-    alert("Login link sent to: " + email);
-});
-
-// --- DATA RESTORATION LOGIC ---
-
-// Save Data (Registration)
+// Handle Registration
 const registerForm = document.getElementById('registerForm');
 if (registerForm) {
-    registerForm.addEventListener('submit', function(e) {
+    registerForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const userData = {
-            managerName: document.getElementById('mgrName').value,
-            teamName: document.getElementById('teamName').value,
-            email: document.getElementById('regEmail').value
-        };
-        
-        // Restore/Save to LocalStorage
-        localStorage.setItem('mLeagueUser', JSON.stringify(userData));
-        alert("Account Created! Welcome to M-League Fantasy.");
-        window.location.href = 'index.html'; // Redirect to login
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(async (userCredential) => {
+                const user = userCredential.user;
+                const managerName = document.getElementById('mgrName').value;
+                const teamName = document.getElementById('teamName').value;
+
+                // Save Manager Profile to Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    managerName: managerName,
+                    teamName: teamName,
+                    email: email,
+                    createdAt: new Date()
+                });
+
+                alert("Account & Team Created!");
+                window.location.href = 'index.html';
+            }).catch((error) => alert(error.message));
     });
 }
 
-// Check for existing session on load
-function checkSession() {
-    const savedUser = localStorage.getItem('mLeagueUser');
-    if (savedUser) {
-        const user = JSON.parse(savedUser);
-        console.log("Restored User Session:", user.teamName);
-        // In the future, redirect directly to Dashboard here
-    }
+// Handle Login
+const loginForm = document.getElementById('emailLoginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => window.location.href = 'dashboard.html')
+            .catch((error) => alert(error.message));
+    });
 }
-checkSession();
+
+// Global Session Listener (Replaces checkSession)
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        console.log("User is signed in:", user.email);
+    }
+});
