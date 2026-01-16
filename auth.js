@@ -159,18 +159,22 @@ const initNav = () => {
         items.forEach(item => item.classList.remove('active'));
         el.classList.add('active');
 
-        // Toggle View Logic (Home vs Profile)
-        const label = el.querySelector('.nav-label').innerText;
+        // Normalized Toggle View Logic (Home vs Profile)
+        const label = el.querySelector('.nav-label').innerText.trim().toLowerCase(); // Normalize for CSS transforms
         const homeView = document.getElementById('homeView');
         const profileView = document.getElementById('profileView');
         
         if (homeView && profileView) {
-            if (label === 'Home') {
+            if (label === 'home') {
                 homeView.style.display = 'block';
                 profileView.style.display = 'none';
-            } else if (label === 'Profile') {
+            } else if (label === 'profile') {
                 homeView.style.display = 'none';
                 profileView.style.display = 'block';
+            } else {
+                // Hide current views if tabs without content (Squad, Transfer, etc.) are clicked
+                homeView.style.display = 'none';
+                profileView.style.display = 'none';
             }
         }
         
