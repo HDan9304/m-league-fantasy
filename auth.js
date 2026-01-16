@@ -17,16 +17,28 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Google Sign-In with Firebase
+// Google Sign-In with Firebase (Improved with Error Handling)
 const customBtn = document.getElementById('customGoogleBtn');
 if (customBtn) {
-    customBtn.onclick = () => {
+    customBtn.onclick = async () => {
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                console.log("Logged in:", result.user.displayName);
-                window.location.href = 'dashboard.html';
-            }).catch((error) => alert(error.message));
+        // Force account selection to avoid auto-sign-in loops
+        provider.setCustomParameters({ prompt: 'select_account' });
+        
+        try {
+            const result = await signInWithPopup(auth, provider);
+            console.log("Logged in:", result.user.displayName);
+            window.location.href = 'dashboard.html';
+        } catch (error) {
+            console.error("Auth Error:", error.code);
+            if (error.code === 'auth/popup-blocked') {
+                alert("Please enable popups for this site or try again.");
+            } else if (error.code === 'auth/cancelled-popup-request') {
+                // User closed the popup, no action needed
+            } else {
+                alert("Login failed: " + error.message);
+            }
+        }
     };
 }
 
