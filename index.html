@@ -3,257 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M-League Fantasy</title>
+    <title>M-League Fantasy | Login</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    
-    <div id="loading-overlay">
-        Loading M-League...
+    <div class="login-wrapper">
+        <header class="brand">
+            <h1>M-League <span>Fantasy</span></h1>
+            <p>The Home of Malaysian Football</p>
+        </header>
+
+        <main class="login-card">
+            <form id="emailLoginForm">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="btn-primary">Continue with Email</button>
+            </form>
+
+            <div class="divider"><span>OR</span></div>
+
+            <div id="googleBtnContainer">
+                </div>
+        </main>
     </div>
-
-    <div id="toast-container"></div>
-
-    <div id="auth-screen" class="login-container">
-        <div class="brand-header">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#0E1E5B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-            </svg>
-            <h1>M-League Fantasy</h1>
-            <span>The Official Manager Experience</span>
-        </div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="loginEmail" class="form-control" placeholder="manager@example.com" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <div class="password-wrapper">
-    <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
-    <span class="toggle-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-    </span>
-</div>
-            </div>
-        <p id="forgotBtn" style="text-align: right; color: #0E1E5B; font-size: 0.8rem; margin-bottom: 15px; cursor: pointer; text-decoration: underline;">Forgot Password?</p>
-        <button type="submit" class="btn-primary">Masuk / Login</button>
-        </form>
-
-        <form id="registerForm" class="hidden">
-            <div class="form-group">
-                <label>Manager Name</label>
-                <input type="text" id="regManager" class="form-control" placeholder="e.g. Dato' Lee" required>
-            </div>
-            <div class="form-group">
-                <label>Team Name</label>
-                <input type="text" id="regTeam" class="form-control" placeholder="e.g. Harimau Selatan" required>
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="regEmail" class="form-control" placeholder="manager@example.com" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <div class="password-wrapper">
-    <input type="password" id="regPass" class="form-control" placeholder="••••••••" required>
-    <span class="toggle-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-    </span>
-</div>
-            </div>
-            <div class="form-group">
-                <label>Confirm Password</label>
-                <div class="password-wrapper">
-    <input type="password" id="regConfirmPass" class="form-control" placeholder="••••••••" required>
-    <span class="toggle-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-    </span>
-</div>
-            </div>
-            <button type="submit" class="btn-primary">Daftar / Register</button>
-        </form>
-
-        <div class="divider">
-            <span>OR</span>
-        </div>
-
-        <div class="form-footer">
-            <p id="toggleText">Don't have a team yet?</p>
-            <a href="#" id="toggleBtn" class="link">Register for Season 2026</a>
-        </div>
-    </div>
-
-    <div id="dashboard-screen" class="dashboard hidden">
-        <div class="nav-bar">
-            <div class="nav-brand">M-League</div>
-            <button id="logoutBtn" class="btn-logout">Keluar</button>
-        </div>
-        
-        <div class="dashboard-content">
-            <div class="welcome-card">
-                <h2>Selamat Datang, <span id="displayManagerName">Manager</span>!</h2>
-                <div class="stats-grid">
-                    <div class="stat-box">
-                        <small>Team Name</small>
-                        <strong id="displayTeamName">Team</strong>
-                    </div>
-                    <div class="stat-box">
-                        <small>Total Points</small>
-                        <strong>0</strong>
-                    </div>
-                    <div class="stat-box">
-                        <small>Budget</small>
-                        <strong>RM 100M</strong>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pitch-container">
-                <div class="pitch-visual">
-                    <p>Gameweek 1 Selection</p>
-                    <small>Transfer Window Open</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="selection-screen" class="selection-modal hidden">
-        <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
-
-        <div class="selection-sidebar">
-        <button id="sidebarCloseBtn" class="sidebar-close-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
-
-        <div class="sidebar-logo">M-League</div>
-        <button class="sidebar-nav active">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-            <span>My Squad</span>
-        </button>
-        <div style="flex:1"></div> 
-        <button id="selLogoutBtn" class="sidebar-nav logout">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            <span>Log Out</span>
-        </button>
-    </div>
-
-        <div class="selection-right-column">
-        
-        <div class="selection-header">
-            <div style="display:flex; align-items:center; gap:15px;">
-                <button id="sidebarToggle" class="btn-burger">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                </button>
-                <h3>Squad Selection</h3>
-            </div>
-            <small>Season 2026</small>
-        </div>
-
-        <div class="selection-main-wrapper">
-        
-        <div class="selection-rules">
-            <h4 style="display:flex; align-items:center; gap:8px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                Squad Rules
-            </h4>
-            <ul>
-                <li><strong>Budget:</strong> Max RM 100M</li>
-                <li><strong>Team Limit:</strong> Max 3 Players per Club</li>
-                <li><strong>Structure:</strong> 2 GK &bull; 5 DEF &bull; 5 MID &bull; 3 FWD</li>
-            </ul>
-        </div>
-
-        <div id="gw-deadline" class="deadline-banner">
-            Loading Deadline...
-        </div>
-
-        <div class="selection-stats-card">
-            <div class="stats-row border-bottom">
-                <div class="stat-item">
-                    <small>Manager</small>
-                    <span id="selManager">...</span>
-                </div>
-                <div class="stat-item text-right">
-                    <small>Team</small>
-                    <span id="selTeam">...</span>
-                </div>
-            </div>
-            <div class="stats-row">
-                <div class="stat-item">
-                    <small>Selected</small>
-                    <strong id="selCount">0/15</strong>
-                </div>
-                <div class="stat-item text-right">
-                    <small>Bank Balance</small>
-                    <strong id="selBank" style="color: var(--color-primary-blue);">RM 100.0M</strong>
-                </div>
-            </div>
-        </div>
-
-        <div class="pitch-inline-container">
-            <div class="modal-pitch" style="border-radius: 8px; min-height: 550px;">
-                <div class="pitch-lines">
-                    <div class="box-penalty-top"></div>
-                    <div class="box-goal-top"></div>
-                    <div class="line-center"></div>
-                    <div class="box-penalty-bottom"></div>
-                    <div class="box-goal-bottom"></div>
-                </div>
-
-                <div class="pitch-row" id="row-GK"></div>
-                <div class="pitch-row" id="row-DEF"></div>
-                <div class="pitch-row" id="row-MID"></div>
-                <div class="pitch-row" id="row-FWD"></div>
-            </div>
-        </div>
-
-        <div id="market-modal" class="market-overlay hidden">
-            <div class="market-content">
-                <div class="market-header">
-                    <h3 id="marketTitle">Select Player</h3>
-                    <button id="closeMarketBtn" style="background:none; border:none; cursor:pointer; color: #666;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <div id="market-list" class="market-list">
-                    </div>
-            </div>
-        </div>
-
-        <div id="action-modal" class="market-overlay hidden" style="z-index: 4100;">
-             <div class="market-content" style="height: auto; min-height: 300px;">
-                <div class="market-header">
-                    <h3>Player Profile</h3>
-                    <button id="closeActionBtn" style="background:none; border:none; cursor:pointer; color: #666;">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
-                </div>
-                <div class="action-body" style="padding: 20px; text-align: center; flex: 1; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-                    <img id="actionKit" src="" class="action-kit">
-                    <h2 id="actionName" style="color: var(--color-primary-blue); margin-bottom: 5px;">Player Name</h2>
-                    <p id="actionInfo" style="color: #666; font-size: 0.9rem; margin-bottom: 25px; font-weight:600;">POS • Team • RM 0.0M</p>
-                    
-                    <div style="display: flex; gap: 10px; width: 100%;">
-                        <button id="btnRemove" class="btn-danger" style="flex:1; padding: 12px; border-radius: 8px; cursor: pointer;">Remove</button>
-                        <button id="btnReplace" class="btn-primary" style="flex:1; margin:0;">Replace</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="selection-footer">
-            <div class="footer-actions">
-                <button id="autoPickBtn" class="btn-action-auto">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                    Auto
-                </button>
-                <button id="resetBtn" class="btn-action-reset">Reset</button>
-                <button id="confirmSquadBtn" class="btn-action-confirm" disabled>Confirm</button>
-            </div>
-        </div>
-    </div> </div> </div> <script type="module" src="script.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
