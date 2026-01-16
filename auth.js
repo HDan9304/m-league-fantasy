@@ -5,10 +5,13 @@ window.onload = function () {
         callback: handleGoogleLogin
     });
 
-    google.accounts.id.renderButton(
-        document.getElementById("googleBtnContainer"),
-        { theme: "filled_black", size: "large", shape: "pill", text: "signin_with" }
-    );
+    // Custom Button Click Handler
+    const customBtn = document.getElementById('customGoogleBtn');
+    if (customBtn) {
+        customBtn.onclick = () => {
+            google.accounts.id.prompt(); // Triggers the One Tap/Login popup
+        };
+    }
 };
 
 // Handle Google Response
