@@ -435,18 +435,18 @@ input {
 }
 
 .stat-item.secondary .stat-value {
-    font-size: 1.4rem; /* Prominent secondary numbers */
+    font-size: 1.8rem; /* Increased for better visual impact */
 }
 
 .stat-item.highlight.center-hero .stat-value {
-    font-size: 3.2rem; /* BIGGEST SIZE: Hero point focus */
+    font-size: 4rem; /* MAXIMIZED HERO SIZE: Clear primary focus */
     color: var(--accent-color);
-    text-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
+    text-shadow: 0 0 25px rgba(250, 204, 21, 0.4);
 }
 
 .stat-item.center-hero .stat-label {
-    color: var(--text-primary); /* Bold color for hero label */
-    font-size: 0.65rem;
+    color: var(--text-primary);
+    font-size: 0.7rem; /* Slightly larger label for the larger hero stat */
 }
 
 .card-action {
@@ -472,7 +472,11 @@ input {
     }
     .manager-card { padding: 22px 18px; }
     .card-header h2 { font-size: 1.4rem; }
-    .stats-grid.hero-layout { grid-template-columns: 1fr 1.4fr 1fr; gap: 8px; }
-    .stat-item.highlight.center-hero .stat-value { font-size: 2.5rem; }
-    .stat-item.secondary .stat-value { font-size: 1.2rem; }
+    .stats-grid.hero-layout { grid-template-columns: 1fr 1.5fr 1fr; gap: 8px; }
+    .stat-item.highlight.center-hero .stat-value { 
+        font-size: 3rem; /* Scaled for mobile clarity */
+    }
+    .stat-item.secondary .stat-value { 
+        font-size: 1.5rem; /* Scaled for mobile clarity */
+    }
 }
