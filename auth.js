@@ -1,7 +1,7 @@
 // Firebase SDK Integration
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Your Firebase configuration (Updated with live project keys)
 const firebaseConfig = {
@@ -105,13 +105,26 @@ onAuthStateChanged(auth, async (user) => {
             }
         }
 
-        // --- Live Deadline Countdown Logic ---
-        const deadlineDate = new Date("Jan 25, 2026 18:00:00").getTime(); // Set your next deadline here
+        // --- Dynamic Deadline Logic (Firestore) ---
+        let targetDeadline = 0;
         const timerEl = document.getElementById('countdownTimer');
+        const gwEl = document.getElementById('deadlineGW');
+
+        // Listen for global league status changes
+        onSnapshot(doc(db, "settings", "leagueStatus"), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                // Assumes 'deadline' is a Firestore Timestamp and 'gw' is a String
+                targetDeadline = data.deadline.toDate().getTime();
+                if (gwEl) gwEl.innerText = data.gw;
+            }
+        });
         
         const updateTimer = () => {
+            if (!targetDeadline) return;
+            
             const now = new Date().getTime();
-            const distance = deadlineDate - now;
+            const distance = targetDeadline - now;
 
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -128,7 +141,6 @@ onAuthStateChanged(auth, async (user) => {
         };
 
         setInterval(updateTimer, 1000);
-        updateTimer();
     }
 });
 
