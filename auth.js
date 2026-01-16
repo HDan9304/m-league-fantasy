@@ -91,3 +91,34 @@ onAuthStateChanged(auth, (user) => {
         console.log("User is signed in:", user.email);
     }
 });
+
+// --- Floating Nav Bubble Logic ---
+const initNav = () => {
+    const nav = document.querySelector('.floating-nav');
+    const indicator = document.querySelector('.nav-indicator');
+    const items = document.querySelectorAll('.nav-item');
+
+    const updateIndicator = (el) => {
+        items.forEach(item => item.classList.remove('active'));
+        el.classList.add('active');
+        
+        const index = Array.from(items).indexOf(el);
+        
+        // Refined fit: Accounts for the 8px side padding (16px total) for a perfect "nearly-fit"
+        indicator.style.width = `calc((100% - 16px) / 5)`;
+        indicator.style.left = `calc(8px + (${index} * (100% - 16px) / 5))`;
+    };
+
+    items.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            updateIndicator(item);
+        });
+    });
+
+    // Initialize bubble position on page load
+    const active = document.querySelector('.nav-item.active');
+    if (active) setTimeout(() => updateIndicator(active), 150);
+};
+
+if (document.querySelector('.floating-nav')) initNav();

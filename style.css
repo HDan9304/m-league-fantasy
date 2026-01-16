@@ -217,8 +217,8 @@ input {
 }
 
 .nav-list {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
     align-items: center;
     list-style: none;
     margin: 0;
@@ -248,4 +248,55 @@ input {
     .nav-item a {
         font-size: 0.8rem;
     }
+}
+
+/* --- Bubble Navigation Upgrades --- */
+.floating-nav {
+    padding: 5px 8px !important; /* Creates a small, professional gap around the bubble */
+}
+
+.nav-indicator {
+    position: absolute;
+    height: calc(100% - 10px); /* Adjusts height to leave 5px gap at top and bottom */
+    background: var(--accent-color);
+    border-radius: 100px;
+    top: 5px; /* Centers the bubble vertically */
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+    opacity: 0.15; 
+}
+
+.nav-list {
+    position: relative;
+    z-index: 1;
+}
+
+.nav-item a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: var(--text-secondary);
+    padding: 8px 0;
+    border-radius: 100px;
+    width: 100%; /* Fills the grid segment for perfect symmetry */
+}
+
+.nav-item.active a {
+    color: var(--accent-color) !important;
+}
+
+.material-symbols-outlined {
+    font-size: 24px;
+    transition: transform 0.3s;
+}
+
+.nav-item.active .material-symbols-outlined {
+    transform: translateY(-3px);
+}
+
+.nav-label {
+    font-size: 0.6rem;
+    font-weight: 700;
 }
