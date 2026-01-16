@@ -301,54 +301,66 @@ input {
     font-weight: 700;
 }
 
-/* --- Game Week Summary Card (Improved Glassmorphism) --- */
+/* --- Game Week Summary Card (Premium Upgrade) --- */
 .manager-card {
     margin-top: 20px;
-    /* Richer gradient for depth */
-    background: linear-gradient(165deg, rgba(250, 204, 21, 0.1) 0%, rgba(21, 25, 33, 0.8) 100%);
+    /* Pitch Texture + Glass Gradient background pattern */
+    background: 
+        linear-gradient(rgba(21, 25, 33, 0.8), rgba(21, 25, 33, 0.8)),
+        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255, 255, 255, 0.02) 40px, rgba(255, 255, 255, 0.02) 80px),
+        linear-gradient(165deg, rgba(250, 204, 21, 0.15) 0%, rgba(21, 25, 33, 1) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 24px;
     padding: 25px;
     text-align: left;
-    /* High-contrast reflection effect using dual shadows */
-    box-shadow: 
-        inset 0 0 20px rgba(255, 255, 255, 0.03), 
-        0 12px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.03), 0 12px 40px rgba(0, 0, 0, 0.5);
     width: 100%;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 25px;
+/* Subtle "Lift" effect on hover for a high-end feel */
+.manager-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
-.card-header h2 {
-    font-family: 'Montserrat', sans-serif;
-    color: var(--accent-color);
-    font-size: 1.5rem;
-    margin-bottom: 2px;
-    letter-spacing: -0.5px;
-}
-
-.card-header p {
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 0.85rem;
-    margin-bottom: 0;
-}
-
-/* Rank Badge for Visual Balance */
 .rank-pill {
     background: rgba(250, 204, 21, 0.1);
     border: 1px solid rgba(250, 204, 21, 0.2);
-    padding: 8px 14px;
+    padding: 8px 12px;
     border-radius: 16px;
     text-align: right;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.rank-display {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: flex-end;
+}
+
+.rank-trend {
+    font-size: 16px !important;
+    color: #4ade80; /* Green highlight for positive rank movement */
+}
+
+/* Action Shortcut strip */
+.card-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--accent-color);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .rank-label {
