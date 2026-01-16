@@ -10,55 +10,71 @@
 <body class="dashboard-body">
     <div class="app-container">
         <div id="dashboardContent">
-            <header class="brand">
-                <h1>M-League <span>Fantasy</span></h1>
-                <p>Welcome back, Manager</p>
-            </header>
+            <div id="homeView">
+                <header class="brand">
+                    <h1>M-League <span>Fantasy</span></h1>
+                    <p>Welcome back, Manager</p>
+                </header>
 
-            <div class="manager-card">
-                <div class="card-header">
-                    <div class="header-info">
-                        <h2 id="displayTeamName">Loading Team...</h2>
-                        <div class="mgr-gw-row">
-                            <p id="displayMgrName">Manager Name</p>
-                            <span class="gw-badge">GW 1</span>
+                <div class="manager-card">
+                    <div class="card-header">
+                        <div class="header-info">
+                            <h2 id="displayTeamName">Loading Team...</h2>
+                            <div class="mgr-gw-row">
+                                <p id="displayMgrName">Manager Name</p>
+                                <span class="gw-badge">GW 1</span>
+                            </div>
+                        </div>
+                        <div class="rank-pill">
+                            <span class="rank-label">Rank</span>
+                            <div class="rank-display">
+                                <span class="rank-value">#--</span>
+                                <span class="rank-trend material-symbols-outlined">trending_up</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="rank-pill">
-                        <span class="rank-label">Rank</span>
-                        <div class="rank-display">
-                            <span class="rank-value">#--</span>
-                            <span class="rank-trend material-symbols-outlined">trending_up</span>
+                    <div class="stats-grid hero-layout">
+                        <div class="stat-item secondary">
+                            <span class="stat-label">Average</span>
+                            <span class="stat-value">34</span>
+                        </div>
+                        <div class="stat-item highlight center-hero">
+                            <span class="stat-label">GW Points</span>
+                            <span class="stat-value" id="gwPoints">0</span>
+                        </div>
+                        <div class="stat-item secondary">
+                            <span class="stat-label">Highest</span>
+                            <span class="stat-value">82</span>
                         </div>
                     </div>
-                </div>
-                <div class="stats-grid hero-layout">
-                    <div class="stat-item secondary">
-                        <span class="stat-label">Average</span>
-                        <span class="stat-value">34</span>
-                    </div>
-                    <div class="stat-item highlight center-hero">
-                        <span class="stat-label">GW Points</span>
-                        <span class="stat-value" id="gwPoints">0</span>
-                    </div>
-                    <div class="stat-item secondary">
-                        <span class="stat-label">Highest</span>
-                        <span class="stat-value">82</span>
+                    <div class="card-action">
+                        <span>View My Full Squad</span>
+                        <span class="material-symbols-outlined">chevron_right</span>
                     </div>
                 </div>
-                <div class="card-action">
-                    <span>View My Full Squad</span>
-                    <span class="material-symbols-outlined">chevron_right</span>
+
+                <div class="deadline-card">
+                    <div class="deadline-info">
+                        <span class="deadline-label">Next Deadline</span>
+                        <span class="deadline-gw" id="deadlineGW">GW 2</span>
+                    </div>
+                    <div class="deadline-timer" id="countdownTimer">
+                        00d 00h 00m 00s
+                    </div>
                 </div>
             </div>
 
-            <div class="deadline-card">
-                <div class="deadline-info">
-                    <span class="deadline-label">Next Deadline</span>
-                    <span class="deadline-gw" id="deadlineGW">GW 2</span>
-                </div>
-                <div class="deadline-timer" id="countdownTimer">
-                    00d 00h 00m 00s
+            <div id="profileView" style="display: none;">
+                <header class="brand">
+                    <h1>Manager <span>Profile</span></h1>
+                    <p>Settings & Account Management</p>
+                </header>
+                
+                <div class="profile-card">
+                    <button id="logoutBtn" class="logout-btn">
+                        <span class="material-symbols-outlined">logout</span>
+                        Logout from M-League
+                    </button>
                 </div>
             </div>
         </div>

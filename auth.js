@@ -1,6 +1,6 @@
 // Firebase SDK Integration
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Your Firebase configuration (Updated with live project keys)
@@ -158,6 +158,21 @@ const initNav = () => {
     const updateIndicator = (el) => {
         items.forEach(item => item.classList.remove('active'));
         el.classList.add('active');
+
+        // Toggle View Logic (Home vs Profile)
+        const label = el.querySelector('.nav-label').innerText;
+        const homeView = document.getElementById('homeView');
+        const profileView = document.getElementById('profileView');
+        
+        if (homeView && profileView) {
+            if (label === 'Home') {
+                homeView.style.display = 'block';
+                profileView.style.display = 'none';
+            } else if (label === 'Profile') {
+                homeView.style.display = 'none';
+                profileView.style.display = 'block';
+            }
+        }
         
         const index = Array.from(items).indexOf(el);
         
@@ -179,3 +194,14 @@ const initNav = () => {
 };
 
 if (document.querySelector('.floating-nav')) initNav();
+
+// --- Logout Action Logic ---
+document.addEventListener('click', (e) => {
+    // Target the logout button by ID or its children
+    if (e.target.id === 'logoutBtn' || e.target.closest('#logoutBtn')) {
+        const auth = getAuth();
+        signOut(auth).then(() => {
+            window.location.href = 'index.html'; // Redirect to login screen
+        }).catch((error) => alert("Logout failed: " + error.message));
+    }
+});
