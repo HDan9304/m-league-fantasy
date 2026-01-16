@@ -300,3 +300,121 @@ input {
     font-size: 0.6rem;
     font-weight: 700;
 }
+
+/* --- Game Week Summary Card (Improved Glassmorphism) --- */
+.manager-card {
+    margin-top: 20px;
+    /* Richer gradient for depth */
+    background: linear-gradient(165deg, rgba(250, 204, 21, 0.1) 0%, rgba(21, 25, 33, 0.8) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 25px;
+    text-align: left;
+    /* High-contrast reflection effect using dual shadows */
+    box-shadow: 
+        inset 0 0 20px rgba(255, 255, 255, 0.03), 
+        0 12px 40px rgba(0, 0, 0, 0.5);
+    width: 100%;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.card-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--accent-color);
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+    letter-spacing: -0.5px;
+}
+
+.card-header p {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+/* Rank Badge for Visual Balance */
+.rank-pill {
+    background: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.2);
+    padding: 8px 14px;
+    border-radius: 16px;
+    text-align: right;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.rank-label {
+    display: block;
+    font-size: 0.55rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+
+.rank-value {
+    color: var(--accent-color);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.stats-grid {
+    display: grid;
+    /* Give the Points column more space for its highlight */
+    grid-template-columns: 1fr 1.3fr 1fr 1fr;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 20px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+/* Dynamic Points Highlight */
+.stat-item.highlight .stat-value {
+    font-size: 2rem; /* Larger font for emphasis */
+    color: var(--accent-color);
+    text-shadow: 0 0 15px rgba(250, 204, 21, 0.3);
+}
+
+.stat-item.highlight .stat-label {
+    color: var(--text-primary);
+}
+
+/* Adapt sizes for smaller mobile screens */
+@media (max-width: 480px) {
+    .card-header h2 { font-size: 1.3rem; }
+    .stat-value { font-size: 0.9rem; }
+    .stat-item.highlight .stat-value { font-size: 1.6rem; }
+    .manager-card { padding: 20px; }
+}

@@ -1,7 +1,7 @@
 // Firebase SDK Integration
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Your Firebase configuration (Updated with live project keys)
 const firebaseConfig = {
@@ -85,10 +85,25 @@ if (loginForm) {
     });
 }
 
-// Global Session Listener (Replaces checkSession)
-onAuthStateChanged(auth, (user) => {
+// Global Session Listener (Fetches Manager Profile)
+onAuthStateChanged(auth, async (user) => {
     if (user) {
         console.log("User is signed in:", user.email);
+        
+        // Fetch user document from Firestore
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+            const userData = userSnap.data();
+            const teamEl = document.getElementById('displayTeamName');
+            const mgrEl = document.getElementById('displayMgrName');
+            
+            if (teamEl && mgrEl) {
+                teamEl.innerText = userData.teamName;
+                mgrEl.innerText = userData.managerName;
+            }
+        }
     }
 });
 
