@@ -103,6 +103,10 @@ onAuthStateChanged(auth, async (user) => {
                 teamEl.innerText = userData.teamName;
                 mgrEl.innerText = userData.managerName;
             }
+        } else {
+            // No profile found: Show the modal for Google/New users
+            const modal = document.getElementById('googleProfileModal');
+            if (modal) modal.style.display = 'flex';
         }
 
         // --- Dynamic Deadline Logic (Improved Firestore Sync) ---
@@ -209,3 +213,33 @@ document.addEventListener('click', (e) => {
         }).catch((error) => alert("Logout failed: " + error.message));
     }
 });
+
+// --- Handle New Profile Submission ---
+const googleProfileForm = document.getElementById('googleProfileForm');
+if (googleProfileForm) {
+    googleProfileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return;
+
+        const managerName = document.getElementById('newMgrName').value;
+        const teamName = document.getElementById('newTeamName').value;
+
+        try {
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                managerName: managerName,
+                teamName: teamName,
+                email: user.email,
+                createdAt: new Date()
+            });
+
+            // Update dashboard UI immediately
+            document.getElementById('displayTeamName').innerText = teamName;
+            document.getElementById('displayMgrName').innerText = managerName;
+            document.getElementById('googleProfileModal').style.display = 'none'; // Hide modal
+        } catch (error) {
+            alert("Error saving profile: " + error.message);
+        }
+    });
+}
