@@ -103,6 +103,9 @@ onAuthStateChanged(auth, async (user) => {
                 teamEl.innerText = userData.teamName;
                 mgrEl.innerText = userData.managerName;
             }
+            
+            // Reveal dashboard content only after data is loaded
+            document.getElementById('dashboardContent').style.visibility = 'visible';
         } else {
             // No profile found: Show the modal for Google/New users
             const modal = document.getElementById('googleProfileModal');
@@ -238,6 +241,9 @@ if (googleProfileForm) {
             document.getElementById('displayTeamName').innerText = teamName;
             document.getElementById('displayMgrName').innerText = managerName;
             document.getElementById('googleProfileModal').style.display = 'none'; // Hide modal
+            
+            // Reveal dashboard content now that setup is complete
+            document.getElementById('dashboardContent').style.visibility = 'visible';
         } catch (error) {
             alert("Error saving profile: " + error.message);
         }
